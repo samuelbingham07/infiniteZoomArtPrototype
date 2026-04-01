@@ -1,0 +1,496 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Infinite Zoom Shader Prototype</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    html, body { width:100%; height:100%; margin:0; padding:0; background:#000; overflow:hidden; }
+    canvas { display:block; touch-action:none; }
+    #wisp-overlay {
+      position:fixed; inset:0;
+      pointer-events:none;
+    }
+    #wisp-overlay.active { pointer-events:auto; }
+  </style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<canvas id="wisp-overlay"></canvas>
+
+<script>
+// ─── WebGL setup ────────────────────────────────────────────────────────────
+const canvas = document.getElementById('gl');
+const gl = canvas.getContext('webgl');
+if(!gl){ document.body.innerHTML = 'WebGL not supported'; throw new Error(); }
+
+function resize(){
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width  = Math.max(1, Math.floor(innerWidth  * dpr));
+  canvas.height = Math.max(1, Math.floor(innerHeight * dpr));
+  canvas.style.width  = innerWidth  + 'px';
+  canvas.style.height = innerHeight + 'px';
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  wc.width  = innerWidth;
+  wc.height = innerHeight;
+}
+window.addEventListener('resize', resize);
+
+// ─── Wisp overlay (2D) ───────────────────────────────────────────────────────
+const wc  = document.getElementById('wisp-overlay');
+const ctx = wc.getContext('2d');
+
+// ─── Shader ─────────────────────────────────────────────────────────────────
+const vertSrc = `
+  attribute vec2 aPos;
+  varying vec2 vUv;
+  void main(){
+    vUv = aPos * 0.5 + 0.5;
+    gl_Position = vec4(aPos, 0.0, 1.0);
+  }`;
+
+const fragSrc = `
+  precision highp float;
+  uniform vec2  iResolution;
+  uniform float iTime;
+  uniform vec2  uCenter;
+  uniform float uZoom;
+  varying vec2  vUv;
+
+  void main(){
+    vec2 uv = (gl_FragCoord.xy - 0.5*iResolution) / iResolution.y;
+    vec2 c  = uv / uZoom + uCenter;
+    vec2 z  = vec2(0.0);
+
+    float maxIter  = min(200.0 + uZoom * 0.04, 600.0);
+    bool  escaped  = false;
+    float iter     = 0.0;
+    float minOrbit = 1e10;
+    vec2  minZ     = vec2(0.0);
+
+    for(float i = 0.0; i < 600.0; i++){
+      if(i >= maxIter) break;
+      z = vec2(z.x*z.x - z.y*z.y, 2.0*z.x*z.y) + c;
+      float d2 = dot(z, z);
+      if(d2 < minOrbit){ minOrbit = d2; minZ = z; }
+      if(d2 > 256.0){ iter = i; escaped = true; break; }
+    }
+
+    if(!escaped){
+      float t   = sqrt(minOrbit);
+      float ang = atan(minZ.y, minZ.x);
+      vec3 col  = 0.5 + 0.5*cos(t * 4.0 + ang * 0.5 + vec3(1.0, 2.5, 4.5));
+      gl_FragColor = vec4(col, 1.0);
+      return;
+    }
+
+    float log_zn = log(dot(z,z)) * 0.5;
+    float nu = log(log_zn / log(2.0)) / log(2.0);
+    float mu = (iter + 1.0 - nu) / maxIter;
+
+    vec3 col = 0.5 + 0.5*cos(3.0 + mu*20.0 + vec3(0.0, 2.094, 4.189));
+    gl_FragColor = vec4(col, 1.0);
+  }`;
+
+function compile(type, src){
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src); gl.compileShader(s);
+  if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)){
+    console.error(gl.getShaderInfoLog(s)); throw new Error('Shader error');
+  }
+  return s;
+}
+const prog = gl.createProgram();
+gl.attachShader(prog, compile(gl.VERTEX_SHADER,   vertSrc));
+gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fragSrc));
+gl.linkProgram(prog);
+if(!gl.getProgramParameter(prog, gl.LINK_STATUS)){
+  console.error(gl.getProgramInfoLog(prog)); throw new Error('Link error');
+}
+gl.useProgram(prog);
+
+const posLoc  = gl.getAttribLocation(prog,  'aPos');
+const resLoc  = gl.getUniformLocation(prog, 'iResolution');
+const timeLoc = gl.getUniformLocation(prog, 'iTime');
+const ctrLoc  = gl.getUniformLocation(prog, 'uCenter');
+const zmLoc   = gl.getUniformLocation(prog, 'uZoom');
+
+const buf = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+gl.enableVertexAttribArray(posLoc);
+gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+// ─── UI labels ───────────────────────────────────────────────────────────────
+const CATEGORY_LABELS = [
+  'Shares Same\nSpecial Interest',
+  'Lives Within\n30 Miles',
+  'Shares Same\nNeurodivergent Traits',
+  'Recommended\nFor You',
+];
+
+// Level 1 snippets — 4 sets, one per category, each with 4 profile snippets
+const SNIPPET_LABELS = [
+  // Category 0: special interest
+  [ 'also really into\nvintage synths', 'reads the same\nbook series', 'competitive chess\nevery weekend', 'loves hiking\nand camping' ],
+  // Category 1: within 30 miles
+  [ 'just 4 miles\naway in Soho', 'walks the same\npark on sundays', 'same commute\nline as you', 'goes to a gym\nnear your office' ],
+  // Category 2: neurodivergent traits
+  [ 'also diagnosed\nwith ADHD', 'uses the same\ncoping routines', 'hyperfocuses on\nthe same things', 'navigates the\nsame sensory stuff' ],
+  // Category 3: recommended
+  [ '88% compatibility\nacross all traits', 'similar daily\nenergy patterns', 'values depth over\nsmall talk too', 'compatible ways\nof communicating' ],
+];
+
+// Convert CSS-fraction screen pos to Mandelbrot coordinate at current zoom
+function screenToMandelbrot(fx, fy){
+  const aspect = canvas.width / canvas.height;
+  const uvx = (fx - 0.5) * aspect;
+  const uvy = 0.5 - fy;
+  return {
+    x: uvx / zoomLevel + currentCenter.x,
+    y: uvy / zoomLevel + currentCenter.y,
+  };
+}
+
+// ─── State ───────────────────────────────────────────────────────────────────
+let mode             = 'zooming';
+let uiLevel          = 0;   // 0=categories  1=snippets  2=profile
+let chosenCategoryIdx = 0;
+let elapsed          = 0;
+let lastNow   = performance.now();
+let wispTime  = 0;
+let wispVisible = false;
+let overlayOpacity = 0;  // fades in/out
+
+// Start already inside Seahorse Valley — intricate detail fills the frame,
+// no visible whole-set silhouette dividing the canvas into regions
+const START_CX = -0.7436438885706;
+const START_CY =  0.1318259043091;
+let currentCenter = { x: START_CX, y: START_CY };
+let targetCenter  = { x: START_CX, y: START_CY };
+let zoomStart     = 4.0;
+let zoomLevel     = 4.0;
+
+const ZOOM_DURATION      = 1;
+const ZOOM_RATE          = 0.55;
+const HIT_RADIUS         = 34;
+const NUM_STRANDS        = 1;    // one trail per wisp
+const PARTICLES_PER_STRAND = 35;
+const STREAM_PERIOD      = 16.0; // seconds per particle cycle
+const STREAM_REACH       = 0.38; // how far inward strands extend (fraction of diagonal)
+
+// Wisp tip positions — deliberately asymmetric so they feel scattered
+// across one open canvas, not gridded into quadrants
+const WISP_TIPS = [
+  { fx: 0.28, fy: 0.11 },  // upper-left area
+  { fx: 0.87, fy: 0.38 },  // right side
+  { fx: 0.62, fy: 0.89 },  // lower-right area
+  { fx: 0.08, fy: 0.63 },  // left side
+];
+
+// Seeded deterministic RNG (xorshift-based) for fixed strand shapes
+function seededRng(seed){
+  let s = seed | 0;
+  return function(){
+    s ^= s << 13; s ^= s >> 17; s ^= s << 5;
+    return (s >>> 0) / 0xffffffff;
+  };
+}
+
+// Quadratic bezier position at t ∈ [0,1]
+function bezierPt(t, x0, y0, cx, cy, x1, y1){
+  const m = 1 - t;
+  return { x: m*m*x0 + 2*m*t*cx + t*t*x1,
+           y: m*m*y0 + 2*m*t*cy + t*t*y1 };
+}
+
+const wispPositions = [null, null, null, null];
+let wispGeom   = [];
+let strandData = [];
+
+function buildWispGeom(){
+  const diag  = Math.sqrt(innerWidth*innerWidth + innerHeight*innerHeight);
+  const reach = diag * STREAM_REACH;
+
+  wispGeom = WISP_TIPS.map((a) => {
+    const tipX = a.fx * innerWidth;
+    const tipY = a.fy * innerHeight;
+    const dx   = innerWidth  * 0.5 - tipX;
+    const dy   = innerHeight * 0.5 - tipY;
+    const len  = Math.sqrt(dx*dx + dy*dy);
+    // Tail is exactly reach distance inward — all wisps same length
+    const tailX = tipX + (dx/len) * reach;
+    const tailY = tipY + (dy/len) * reach;
+    return { tipX, tipY, tailX, tailY,
+             inDx: dx/len, inDy: dy/len, reach };
+  });
+
+  // One bezier strand per wisp — seeded random lateral bow, no spread/speedMult
+  strandData = wispGeom.map((g, i) => {
+    const rng = seededRng(i * 1731 + 91);
+    const px  = -g.inDy, py = g.inDx;  // perpendicular to inward direction
+
+    // Control point: bow the path laterally
+    const lateral = (rng() - 0.5) * g.reach * 1.0;
+    const along   = 0.3 + rng() * 0.4;
+    const cx = g.tipX + (g.tailX - g.tipX) * along + px * lateral;
+    const cy = g.tipY + (g.tailY - g.tipY) * along + py * lateral;
+
+    return [{ cx, cy, phaseOffset: rng() }];
+  });
+}
+buildWispGeom();
+window.addEventListener('resize', buildWispGeom);
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+function drawDot(x, y, r){
+  const core = ctx.createRadialGradient(x, y, 0, x, y, r);
+  core.addColorStop(0,    'rgba(255,255,255,1)');
+  core.addColorStop(0.45, 'rgba(210,235,255,0.75)');
+  core.addColorStop(1,    'rgba(150,200,255,0)');
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fillStyle = core;
+  ctx.fill();
+}
+
+function drawLabel(text, x, y, align, dimmed){
+  const lines = text.split('\n');
+  const lineH = 19, pad = 14;
+  const blockH = lines.length * lineH;
+  const estW = Math.max(...lines.map(l => l.length)) * 8.5;
+
+  let cx = x;
+  if(align === 'left')   cx = Math.min(x, innerWidth  - estW - pad);
+  if(align === 'right')  cx = Math.max(x, estW + pad);
+  if(align === 'center') cx = Math.max(estW*0.5 + pad, Math.min(x, innerWidth - estW*0.5 - pad));
+
+  let cy = y;
+  if(y - blockH*0.5 < pad)             cy = y + (pad - (y - blockH*0.5));
+  if(y + blockH*0.5 > innerHeight-pad) cy = y - ((y + blockH*0.5) - (innerHeight-pad));
+
+  ctx.font      = dimmed ? '500 12px system-ui,sans-serif' : '600 13px system-ui,sans-serif';
+  ctx.textAlign = align;
+  const fg = dimmed ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.88)';
+  lines.forEach((line, li) => {
+    const lx = cx, ly = cy - blockH*0.5 + li*lineH + 6;
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillText(line.toUpperCase(), lx+1, ly+1);
+    ctx.fillStyle = fg;
+    ctx.fillText(line.toUpperCase(), lx, ly);
+  });
+}
+
+function wispTextAlign(g){
+  const px = -g.inDy, py = g.inDx;
+  const o1x = g.tipX + px*36, o1y = g.tipY + py*36;
+  const o2x = g.tipX - px*36, o2y = g.tipY - py*36;
+  const d1 = Math.hypot(o1x - innerWidth*0.5, o1y - innerHeight*0.5);
+  const d2 = Math.hypot(o2x - innerWidth*0.5, o2y - innerHeight*0.5);
+  const tx = d1 < d2 ? o1x : o2x;
+  const ty = d1 < d2 ? o1y : o2y;
+  const pdx = d1 < d2 ? px : -px;
+  const align = pdx > 0.1 ? 'left' : pdx < -0.1 ? 'right' : 'center';
+  return { tx, ty, align };
+}
+
+// ─── Level 2: Sam's profile view ─────────────────────────────────────────────
+function drawProfileView(opacity){
+  ctx.save();
+  ctx.globalAlpha = opacity;
+  ctx.globalCompositeOperation = 'source-over';
+
+  const cx = innerWidth  * 0.5;
+  const cy = innerHeight * 0.5;
+
+  // Central glow
+  const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 110);
+  glow.addColorStop(0,   'rgba(200,220,255,0.10)');
+  glow.addColorStop(0.7, 'rgba(120,160,255,0.04)');
+  glow.addColorStop(1,   'rgba(80,120,255,0)');
+  ctx.fillStyle = glow;
+  ctx.beginPath(); ctx.arc(cx, cy, 110, 0, Math.PI*2); ctx.fill();
+
+  // Central dot (larger than wisp cores)
+  drawDot(cx, cy, 11);
+
+  // "Sam's Profile" label just above the dot
+  ctx.font = 'bold 17px system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillText("YOU MADE IT TO: SAM'S PROFILE", cx+1, cy-20+1);
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.fillText("YOU MADE IT TO: SAM'S PROFILE", cx, cy-20);
+
+  // Non-interactive feature labels — scattered organically around center
+  const features = [
+    { label: 'Photos',                fx: -0.20, fy: -0.17 },
+    { label: 'Neurodivergent\nTraits', fx:  0.21, fy: -0.14 },
+    { label: 'Distance\nFrom You',    fx: -0.18, fy:  0.19 },
+    { label: 'Special\nInterests',    fx:  0.19, fy:  0.21 },
+  ];
+
+  features.forEach(f => {
+    const fx = cx + f.fx * innerWidth;
+    const fy = cy + f.fy * innerHeight;
+    // Small non-interactive indicator dot
+    ctx.beginPath(); ctx.arc(fx, fy, 4, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(180,210,255,0.4)'; ctx.fill();
+    const align = f.fx < 0 ? 'right' : 'left';
+    const offX  = f.fx < 0 ? -12 : 12;
+    drawLabel(f.label, fx + offX, fy, align, true);
+  });
+
+  ctx.restore();
+}
+
+// ─── Wisp draw ───────────────────────────────────────────────────────────────
+function drawWisps(t, opacity){
+  ctx.clearRect(0, 0, wc.width, wc.height);
+  if(opacity <= 0) return;
+
+  // Level 2: profile view — no interactive wisps
+  if(uiLevel === 2){
+    drawProfileView(opacity);
+    return;
+  }
+
+  const labels = uiLevel === 0 ? CATEGORY_LABELS : SNIPPET_LABELS[chosenCategoryIdx];
+
+  ctx.save();
+  ctx.globalAlpha = opacity;
+
+  // Pass 1 — strands (screen blend)
+  ctx.globalCompositeOperation = 'screen';
+
+  for(let i = 0; i < 4; i++){
+    const g  = wispGeom[i];
+    const st = strandData[i][0];
+    wispPositions[i] = { x: g.tipX, y: g.tipY };
+
+    for(let p = 0; p < PARTICLES_PER_STRAND; p++){
+      const prog = ((p / PARTICLES_PER_STRAND) + st.phaseOffset + t / STREAM_PERIOD) % 1.0;
+      const pt   = bezierPt(prog, g.tailX, g.tailY, st.cx, st.cy, g.tipX, g.tipY);
+      const alpha = Math.pow(prog, 1.4) * 0.7;
+      const size  = prog * 3.5 + 0.6;
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, size, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(200,230,255,${alpha.toFixed(3)})`;
+      ctx.fill();
+    }
+
+    const glow = ctx.createRadialGradient(g.tipX, g.tipY, 0, g.tipX, g.tipY, 44);
+    glow.addColorStop(0,   'rgba(160,215,255,0.18)');
+    glow.addColorStop(0.5, 'rgba(100,170,255,0.05)');
+    glow.addColorStop(1,   'rgba(60,120,255,0)');
+    ctx.beginPath(); ctx.arc(g.tipX, g.tipY, 44, 0, Math.PI*2);
+    ctx.fillStyle = glow; ctx.fill();
+  }
+
+  // Pass 2 — cores + labels (source-over)
+  ctx.globalCompositeOperation = 'source-over';
+
+  for(let i = 0; i < 4; i++){
+    const g = wispGeom[i];
+    drawDot(g.tipX, g.tipY, 8);
+    const { tx, ty, align } = wispTextAlign(g);
+    drawLabel(labels[i], tx, ty, align, false);
+  }
+
+  ctx.restore();
+}
+
+// ─── Show / hide wisps ───────────────────────────────────────────────────────
+function showChoices(){
+  mode = 'choosing';
+  wispVisible = true;
+  wc.classList.add('active');
+}
+
+function hideChoices(){
+  wispVisible = false;
+  wc.classList.remove('active');
+}
+
+// ─── Click detection on wisp cores ──────────────────────────────────────────
+wc.addEventListener('click', (e) => {
+  if(!wispVisible) return;
+  const rect = wc.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  if(uiLevel === 2) return;  // profile view is not interactive
+
+  for(let i = 0; i < 4; i++){
+    const p = wispPositions[i];
+    if(!p) continue;
+    const dx = mx - p.x;
+    const dy = my - p.y;
+    if(Math.sqrt(dx*dx + dy*dy) <= HIT_RADIUS){
+      hideChoices();
+
+      if(uiLevel === 0){
+        // Category chosen → zoom to its wisp position, show snippets
+        chosenCategoryIdx = i;
+        targetCenter = screenToMandelbrot(WISP_TIPS[i].fx, WISP_TIPS[i].fy);
+        uiLevel = 1;
+      } else {
+        // Snippet chosen → zoom to screen center, show Sam's profile
+        targetCenter = screenToMandelbrot(0.5, 0.5);
+        uiLevel = 2;
+      }
+
+      zoomStart = zoomLevel;
+      elapsed   = 0;
+      lastNow   = performance.now();
+      mode      = 'zooming';
+      break;
+    }
+  }
+});
+
+// ─── Render loop ─────────────────────────────────────────────────────────────
+function lerp(a, b, t){ return a + (b - a) * t; }
+
+resize();  // initial sizing (wc must exist first)
+
+function frame(){
+  requestAnimationFrame(frame);
+
+  const now = performance.now();
+  const dt  = (now - lastNow) / 1000;
+  lastNow   = now;
+
+  if(mode === 'zooming'){
+    elapsed += dt;
+    const lerpSpeed = 0.04;
+    currentCenter.x = lerp(currentCenter.x, targetCenter.x, lerpSpeed);
+    currentCenter.y = lerp(currentCenter.y, targetCenter.y, lerpSpeed);
+    zoomLevel = zoomStart * Math.exp(elapsed * ZOOM_RATE);
+    if(elapsed >= ZOOM_DURATION) showChoices();
+  }
+
+  // Fade overlay in/out
+  const targetOpacity = wispVisible ? 1 : 0;
+  overlayOpacity = lerp(overlayOpacity, targetOpacity, 0.08);
+
+  // Advance wisp time only when visible (or fading)
+  if(overlayOpacity > 0.01){
+    wispTime += dt;
+    drawWisps(wispTime, overlayOpacity);
+  } else {
+    ctx.clearRect(0, 0, wc.width, wc.height);
+  }
+
+  gl.uniform2f(resLoc, canvas.width, canvas.height);
+  gl.uniform1f(timeLoc, elapsed);
+  gl.uniform2f(ctrLoc, currentCenter.x, currentCenter.y);
+  gl.uniform1f(zmLoc,  zoomLevel);
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
