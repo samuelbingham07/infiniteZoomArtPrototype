@@ -14,218 +14,11 @@
       pointer-events:none;
     }
     #wisp-overlay.active { pointer-events:auto; }
-    #back-btn {
-      position:fixed; bottom:36px; left:50%; transform:translateX(-50%);
-      display:none;
-      padding:9px 22px;
-      background:rgba(20,30,60,0.72);
-      border:1px solid rgba(140,180,255,0.35);
-      border-radius:999px;
-      color:rgba(200,225,255,0.90);
-      font:600 13px system-ui,sans-serif;
-      letter-spacing:0.08em;
-      cursor:pointer;
-      pointer-events:auto;
-      backdrop-filter:blur(6px);
-      transition:opacity 0.25s, background 0.2s;
-      z-index:10;
-    }
-    #back-btn:hover { background:rgba(40,60,120,0.85); }
-    #breadcrumb {
-      position:fixed; top:14px; left:50%; transform:translateX(-50%);
-      font:500 11px system-ui,sans-serif;
-      letter-spacing:0.10em;
-      color:rgba(140,180,255,0.60);
-      pointer-events:none;
-      opacity:0;
-      transition:opacity 0.4s ease;
-      white-space:nowrap;
-      z-index:6;
-      background:rgba(0,0,8,0.55);
-      padding:4px 14px;
-      border-radius:999px;
-    }
-    #gate {
-      position:fixed; inset:0;
-      display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
-      gap:20px;
-      cursor:pointer;
-      z-index:20;
-      transition:opacity 0.8s ease;
-    }
-    #gate.hidden { opacity:0; pointer-events:none; }
-    #gate-title {
-      font:700 22px/1.3 system-ui,sans-serif;
-      letter-spacing:0.06em;
-      color:rgba(220,235,255,0.95);
-      text-align:center;
-      text-shadow:0 0 30px rgba(100,160,255,0.5);
-    }
-    #gate-sub {
-      font:500 13px system-ui,sans-serif;
-      letter-spacing:0.12em;
-      color:rgba(140,180,255,0.70);
-      text-align:center;
-      animation:pulse 2s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%,100% { opacity:0.5; }
-      50%      { opacity:1;   }
-    }
-    #profile-card {
-      position:fixed; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      z-index:15;
-      pointer-events:none;
-      opacity:0;
-      transition:opacity 0.5s ease;
-    }
-    #profile-card.visible { opacity:1; pointer-events:auto; }
-    #profile-card-inner {
-      width:min(420px, 92vw);
-      max-height:88vh;
-      overflow-y:auto;
-      background:rgba(8,12,28,0.88);
-      border:1px solid rgba(100,150,255,0.22);
-      border-radius:20px;
-      backdrop-filter:blur(18px);
-      box-shadow:0 8px 60px rgba(0,0,30,0.7);
-      scrollbar-width:none;
-    }
-    #profile-card-inner::-webkit-scrollbar { display:none; }
-    .pc-avatar {
-      width:100%; aspect-ratio:1/1;
-      background:rgba(20,32,72,0.9);
-      border-radius:18px 18px 0 0;
-      display:flex; align-items:center; justify-content:center;
-      position:relative;
-    }
-    .pc-avatar svg { width:38%; height:38%; opacity:0.45; }
-    .pc-match-badge {
-      position:absolute; top:14px; right:14px;
-      background:rgba(10,220,130,0.18);
-      border:1px solid rgba(10,220,130,0.45);
-      border-radius:999px;
-      padding:5px 12px;
-      font:600 12px system-ui,sans-serif;
-      letter-spacing:0.08em;
-      color:rgba(80,240,160,0.95);
-    }
-    .pc-body { padding:20px 22px 28px; }
-    .pc-name-row {
-      display:flex; align-items:baseline; gap:10px;
-      margin-bottom:4px;
-    }
-    .pc-name {
-      font:700 22px system-ui,sans-serif;
-      color:rgba(240,245,255,0.97);
-      letter-spacing:0.01em;
-    }
-    .pc-age {
-      font:500 18px system-ui,sans-serif;
-      color:rgba(180,200,255,0.60);
-    }
-    .pc-location {
-      font:400 13px system-ui,sans-serif;
-      color:rgba(140,175,255,0.65);
-      margin-bottom:16px;
-      display:flex; align-items:center; gap:5px;
-    }
-    .pc-bio {
-      font:400 14px/1.6 system-ui,sans-serif;
-      color:rgba(200,215,255,0.72);
-      margin-bottom:20px;
-      border-left:2px solid rgba(100,140,255,0.25);
-      padding-left:12px;
-    }
-    .pc-section-label {
-      font:600 10px system-ui,sans-serif;
-      letter-spacing:0.14em;
-      color:rgba(120,160,255,0.55);
-      text-transform:uppercase;
-      margin-bottom:9px;
-      margin-top:18px;
-    }
-    .pc-tags {
-      display:flex; flex-wrap:wrap; gap:7px;
-    }
-    .pc-tag {
-      padding:5px 12px;
-      border-radius:999px;
-      font:500 12px system-ui,sans-serif;
-      letter-spacing:0.04em;
-    }
-    .pc-tag.trait {
-      background:rgba(120,80,220,0.18);
-      border:1px solid rgba(160,110,255,0.35);
-      color:rgba(200,170,255,0.90);
-    }
-    .pc-tag.interest {
-      background:rgba(30,80,180,0.20);
-      border:1px solid rgba(80,140,255,0.30);
-      color:rgba(160,200,255,0.88);
-    }
-    .pc-divider {
-      height:1px;
-      background:rgba(100,140,255,0.12);
-      margin:20px 0;
-    }
-    #intro-prompt {
-      position:fixed; top:50%; left:50%;
-      transform:translate(-50%, -50%);
-      text-align:center;
-      color:rgba(220,235,255,0.92);
-      font:500 15px/1.55 system-ui,sans-serif;
-      letter-spacing:0.04em;
-      pointer-events:none;
-      opacity:0;
-      transition:opacity 0.6s ease;
-      z-index:5;
-      /* block out trails behind the text */
-      background:radial-gradient(ellipse 220px 60px at center, rgba(0,0,8,0.75) 30%, transparent 100%);
-      padding:20px 32px;
-    }
   </style>
 </head>
 <body>
 <canvas id="gl"></canvas>
 <canvas id="wisp-overlay"></canvas>
-<div id="breadcrumb"></div>
-<div id="intro-prompt">Choose a trait category to explore</div>
-<div id="profile-card">
-  <div id="profile-card-inner">
-    <div class="pc-avatar">
-      <!-- blank person silhouette -->
-      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="34" r="20" fill="rgba(160,200,255,0.55)"/>
-        <ellipse cx="50" cy="84" rx="30" ry="26" fill="rgba(160,200,255,0.55)"/>
-      </svg>
-      <div class="pc-match-badge" id="pc-match"></div>
-    </div>
-    <div class="pc-body">
-      <div class="pc-name-row">
-        <span class="pc-name" id="pc-name"></span>
-        <span class="pc-age"  id="pc-age"></span>
-      </div>
-      <div class="pc-location" id="pc-location">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-        <span id="pc-location-text"></span>
-      </div>
-      <div class="pc-bio" id="pc-bio"></div>
-      <div class="pc-divider"></div>
-      <div class="pc-section-label">My Neurodivergent Traits</div>
-      <div class="pc-tags" id="pc-traits"></div>
-      <div class="pc-section-label">My Interests</div>
-      <div class="pc-tags" id="pc-interests"></div>
-    </div>
-  </div>
-</div>
-<button id="back-btn">&#8592; BACK</button>
-<div id="gate">
-  <div id="gate-title">Explore profiles based on<br>traits, not photos.</div>
-  <div id="gate-sub">TAP ANYWHERE TO BEGIN</div>
-</div>
 
 <script>
 // ─── WebGL setup ────────────────────────────────────────────────────────────
@@ -319,37 +112,10 @@ const fragSrcStarfield = `
     return fract(p.x * p.y);
   }
 
-  // Returns a 0-1 density multiplier based on proximity to 4 constellation centres.
-  // The 4 centres are placed to match the WISP_TIPS screen positions (roughly):
-  //   upper-left (0.28, 0.11), right (0.87, 0.38), lower-right (0.62, 0.89), left (0.08, 0.63)
-  // Mapped to view-space coords (aspect-corrected, centred at origin).
-  float constellationDensity(vec2 uv){
-    // Each centre in the same coordinate space as uv (iResolution.y-normalised, centred)
-    // approximated from screen fractions: fx-0.5 * aspect, 0.5-fy  (aspect~1.78)
-    vec2 c0 = vec2(-0.39,  0.39);  // upper-left
-    vec2 c1 = vec2( 0.66,  0.12);  // right
-    vec2 c2 = vec2( 0.21, -0.39);  // lower-right
-    vec2 c3 = vec2(-0.75, -0.13);  // left
-
-    float r = 0.28;  // cluster radius in view-space
-    float d0 = length(uv - c0) / r;
-    float d1 = length(uv - c1) / r;
-    float d2 = length(uv - c2) / r;
-    float d3 = length(uv - c3) / r;
-
-    float peak = exp(-d0*d0*2.5) + exp(-d1*d1*2.5)
-               + exp(-d2*d2*2.5) + exp(-d3*d3*2.5);
-    // Base void between clusters + cluster peak
-    return 0.06 + clamp(peak, 0.0, 1.0) * 0.94;
-  }
-
-  vec3 starLayer(vec2 uv, float scale, float baseDensity, float szScale, float cs){
+  vec3 starLayer(vec2 uv, float scale, float density, float szScale, float cs){
     vec2 g = floor(uv * scale);
     vec2 f = fract(uv * scale) - 0.5;
     vec3 c = vec3(0.0);
-    // Per-cell density uses the constellation mask so stars cluster spatially
-    float mask = constellationDensity(uv);
-    float density = baseDensity * mask;
     for(int yi = -1; yi <= 1; yi++){
       for(int xi = -1; xi <= 1; xi++){
         vec2 cell = g + vec2(float(xi), float(yi));
@@ -373,32 +139,31 @@ const fragSrcStarfield = `
     vec2 uv = (gl_FragCoord.xy - 0.5*iResolution) / iResolution.y;
 
     // Deep space base
-    vec3 col = vec3(0.004, 0.003, 0.014);
+    vec3 col = vec3(0.005, 0.004, 0.016);
 
-    // Nebula glow concentrated around the 4 cluster zones
-    float mask = constellationDensity(uv);
+    // Nebula — barely moves with camera, just adds color depth
     vec2 nu = uv * 0.5 + uCenter * 0.04;
     float n1 = 0.5 + 0.5*sin(nu.x*3.1  + nu.y*2.3);
     float n2 = 0.5 + 0.5*sin(nu.x*1.7  - nu.y*3.8 + 1.4);
     float n3 = 0.5 + 0.5*sin(nu.x*4.2  + nu.y*1.1 + 2.8);
-    col += vec3(0.06, 0.01, 0.14) * n1 * n2 * mask;
-    col += vec3(0.08, 0.04, 0.06) * n2 * n3 * mask * 0.7;
-    col += vec3(0.02, 0.06, 0.12) * n1 * n3 * mask * 0.6;
+    col += vec3(0.06, 0.01, 0.14) * n1 * n2;
+    col += vec3(0.08, 0.04, 0.06) * n2 * n3 * 0.7;
+    col += vec3(0.02, 0.06, 0.12) * n1 * n3 * 0.6;
 
-    // 4 star layers with parallax — density driven by constellation mask
+    // 4 star layers — deeper layers barely react to zoom (parallax)
     for(int i = 0; i < 4; i++){
-      float depth = 0.15 + float(i) * 0.25;
+      float depth = 0.15 + float(i) * 0.25;   // 0.15, 0.40, 0.65, 0.90
       float lz    = 1.0 + (uZoom - 1.0) * depth;
       vec2  luv   = uv / lz + uCenter * depth * 0.3;
       col += starLayer(luv,
                        25.0 + float(i)*18.0,
-                       0.65,
+                       0.18 - float(i)*0.02,
                        0.016 + float(i)*0.010,
                        float(i)*5.3)
              * (0.55 + float(i)*0.18);
     }
 
-    // Tone-map
+    // Tone-map to prevent blowout
     col = 1.0 - exp(-col * 2.2);
     gl_FragColor = vec4(col, 1.0);
   }`;
@@ -466,12 +231,10 @@ function screenToMandelbrot(fx, fy){
 }
 
 // ─── State ───────────────────────────────────────────────────────────────────
-let mode             = 'idle';
+let mode             = 'zooming';
 let uiLevel          = 0;   // 0=categories  1=snippets  2=profile
 let chosenCategoryIdx = 0;
-let chosenSnippetIdx  = 0;
 let elapsed          = 0;
-let outElapsed       = 0;
 let lastNow   = performance.now();
 let wispTime  = 0;
 let wispVisible = false;
@@ -481,23 +244,13 @@ let overlayOpacity = 0;  // fades in/out
 const START_CX = BACKGROUND === 'fractal' ? -0.7436438885706 : 0.0;
 const START_CY = BACKGROUND === 'fractal' ?  0.1318259043091 : 0.0;
 const START_ZOOM = BACKGROUND === 'fractal' ? 4.0 : 1.0;
-let currentCenter    = { x: START_CX, y: START_CY };
-let zoomCenterStart  = { x: START_CX, y: START_CY };
-let targetCenter     = { x: START_CX, y: START_CY };
-let zoomStart        = START_ZOOM;
-let zoomLevel        = START_ZOOM;
-let targetZoom       = START_ZOOM;
-let zoomOutStart     = START_ZOOM;
+let currentCenter = { x: START_CX, y: START_CY };
+let targetCenter  = { x: START_CX, y: START_CY };
+let zoomStart     = START_ZOOM;
+let zoomLevel     = START_ZOOM;
 
-// For the focal-point zoom: world coord of clicked point + its starting screen fraction
-let zoomFocalWorld = { x: START_CX, y: START_CY };
-let zoomFocalFx = 0.5, zoomFocalFy = 0.5;
-
-// History stack — each entry: { cx, cy, zoom, uiLevel }
-const zoomHistory = [];
-
-const ZOOM_DURATION      = 1.4;
-const ZOOM_RATE          = 0.55; // unused for zoom-in, kept for reference
+const ZOOM_DURATION      = 1;
+const ZOOM_RATE          = 0.55;
 const HIT_RADIUS         = 34;
 const NUM_STRANDS        = 1;    // one trail per wisp
 const PARTICLES_PER_STRAND = 35;
@@ -619,65 +372,7 @@ function wispTextAlign(g){
   return { tx, ty, align };
 }
 
-// ─── Profile data ─────────────────────────────────────────────────────────────
-const PROFILES = [
-  {
-    name: 'Alex Rivera', age: 27,
-    tagline: 'rock climber · synth nerd · ADHD',
-    compat: 91, distance: '3 miles away', location: 'Shoreditch, London',
-    bio: 'I hyperfocus hard — usually on modular synths or the next bouldering project. I find small talk exhausting but could talk for hours about the things I love. Looking for someone who gets that intensity, not just tolerates it.',
-    traits: ['ADHD', 'Hyperfocus tendencies', 'Sensory-seeking', 'Rejection sensitive'],
-    interests: ['Vintage & modular synths', 'Rock climbing', 'Sci-fi novels', 'Analogue photography'],
-  },
-  {
-    name: 'Maya Okonkwo', age: 24,
-    tagline: 'bookworm · night owl · dyslexic',
-    compat: 88, distance: '7 miles away', location: 'Peckham, London',
-    bio: 'I read two books a week — mostly through audiobooks because my brain works better that way. My best hours are after 9pm. I value people who communicate directly and don\'t mind that I sometimes need to re-read things twice.',
-    traits: ['Dyslexia', 'Night owl rhythm', 'High empathy', 'Auditory processing'],
-    interests: ['Fantasy & literary fiction', 'Long-form podcasts', 'Cooking from scratch', 'Thrift shopping'],
-  },
-  {
-    name: 'Jordan Hale', age: 30,
-    tagline: 'trail runner · chess obsessive · autistic',
-    compat: 85, distance: '12 miles away', location: 'Hackney, London',
-    bio: 'I train for ultras at weekends and play chess online most evenings. I need clear plans, honest communication, and low-pressure hangouts. I\'m not great at reading between the lines — just say what you mean and I\'ll do the same.',
-    traits: ['Autistic', 'Routine-driven', 'Literal communicator', 'Detail-oriented'],
-    interests: ['Trail & ultra running', 'Chess', 'Bird watching', 'Topology & maths'],
-  },
-  {
-    name: 'Priya Nair', age: 26,
-    tagline: 'painter · tea collector · sensory processing',
-    compat: 83, distance: '5 miles away', location: 'Dalston, London',
-    bio: 'I paint slow, textured abstracts and own somewhere around 40 loose-leaf teas. Loud venues wipe me out for days so I tend toward quieter plans. I\'m looking for someone who\'s okay with the odd sensory day and doesn\'t need constant energy from me.',
-    traits: ['Sensory processing differences', 'Introvert', 'Low-stimulus needs', 'Deep focus'],
-    interests: ['Watercolour & oil painting', 'Tea ceremony', 'Ceramics', 'Slow travel'],
-  },
-];
-
-// Blank profile avatar — circle with generic person silhouette
-function drawAvatar(x, y, r){
-  // Outer ring
-  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
-  ctx.fillStyle = 'rgba(40,60,110,0.70)'; ctx.fill();
-  ctx.lineWidth = 1.5;
-  ctx.strokeStyle = 'rgba(140,180,255,0.45)'; ctx.stroke();
-
-  // Head
-  const headR = r * 0.30;
-  ctx.beginPath(); ctx.arc(x, y - r*0.18, headR, 0, Math.PI*2);
-  ctx.fillStyle = 'rgba(160,200,255,0.55)'; ctx.fill();
-
-  // Body — clipped to circle
-  ctx.save();
-  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.clip();
-  ctx.beginPath();
-  ctx.ellipse(x, y + r*0.55, r*0.38, r*0.38, 0, 0, Math.PI*2);
-  ctx.fillStyle = 'rgba(160,200,255,0.55)'; ctx.fill();
-  ctx.restore();
-}
-
-// ─── Level 2: profile teaser (clean centred card, no scattered labels) ────────
+// ─── Level 2: Sam's profile view ─────────────────────────────────────────────
 function drawProfileView(opacity){
   ctx.save();
   ctx.globalAlpha = opacity;
@@ -685,80 +380,46 @@ function drawProfileView(opacity){
 
   const cx = innerWidth  * 0.5;
   const cy = innerHeight * 0.5;
-  const profile = PROFILES[chosenSnippetIdx] || PROFILES[0];
 
-  // Glow
-  const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 120);
-  glow.addColorStop(0,   'rgba(200,220,255,0.12)');
+  // Central glow
+  const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 110);
+  glow.addColorStop(0,   'rgba(200,220,255,0.10)');
+  glow.addColorStop(0.7, 'rgba(120,160,255,0.04)');
   glow.addColorStop(1,   'rgba(80,120,255,0)');
   ctx.fillStyle = glow;
-  ctx.beginPath(); ctx.arc(cx, cy, 120, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx, cy, 110, 0, Math.PI*2); ctx.fill();
 
-  // Layout: avatar → match → name → age/distance → tagline → tap hint
-  // all stacked vertically centred, with enough padding between lines
-  let y = cy - 90;
+  // Central dot (larger than wisp cores)
+  drawDot(cx, cy, 11);
 
-  // Avatar
-  drawAvatar(cx, y, 32);
-  y += 32 + 18;  // below avatar bottom + gap
-
-  // Match badge
-  ctx.font = 'bold 11px system-ui,sans-serif';
+  // "Sam's Profile" label just above the dot
+  ctx.font = 'bold 17px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillStyle = 'rgba(100,220,160,0.90)';
-  ctx.fillText(`${profile.compat}% MATCH`, cx, y);
-  y += 22;
-
-  // Name
-  ctx.font = 'bold 18px system-ui,sans-serif';
   ctx.fillStyle = 'rgba(0,0,0,0.55)';
-  ctx.fillText(profile.name.toUpperCase(), cx+1, y+1);
-  ctx.fillStyle = 'rgba(255,255,255,0.96)';
-  ctx.fillText(profile.name.toUpperCase(), cx, y);
-  y += 20;
+  ctx.fillText("YOU MADE IT TO: SAM'S PROFILE", cx+1, cy-20+1);
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.fillText("YOU MADE IT TO: SAM'S PROFILE", cx, cy-20);
 
-  // Age · distance
-  ctx.font = '500 12px system-ui,sans-serif';
-  ctx.fillStyle = 'rgba(180,215,255,0.65)';
-  ctx.fillText(`${profile.age}  ·  ${profile.distance}`, cx, y);
-  y += 22;
+  // Non-interactive feature labels — scattered organically around center
+  const features = [
+    { label: 'Photos',                fx: -0.20, fy: -0.17 },
+    { label: 'Neurodivergent\nTraits', fx:  0.21, fy: -0.14 },
+    { label: 'Distance\nFrom You',    fx: -0.18, fy:  0.19 },
+    { label: 'Special\nInterests',    fx:  0.19, fy:  0.21 },
+  ];
 
-  // Tagline
-  ctx.font = '400 12px system-ui,sans-serif';
-  ctx.fillStyle = 'rgba(180,210,255,0.50)';
-  ctx.fillText(profile.tagline, cx, y);
-  y += 30;
-
-  // Tap hint
-  ctx.font = '500 11px system-ui,sans-serif';
-  ctx.fillStyle = 'rgba(120,160,255,0.55)';
-  ctx.fillText('TAP TO OPEN FULL PROFILE', cx, y);
+  features.forEach(f => {
+    const fx = cx + f.fx * innerWidth;
+    const fy = cy + f.fy * innerHeight;
+    // Small non-interactive indicator dot
+    ctx.beginPath(); ctx.arc(fx, fy, 4, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(180,210,255,0.4)'; ctx.fill();
+    const align = f.fx < 0 ? 'right' : 'left';
+    const offX  = f.fx < 0 ? -12 : 12;
+    drawLabel(f.label, fx + offX, fy, align, true);
+  });
 
   ctx.restore();
-}
-
-// ─── Level 3: DOM profile card ────────────────────────────────────────────────
-const profileCard = document.getElementById('profile-card');
-
-function showProfileCard(){
-  const p = PROFILES[chosenSnippetIdx] || PROFILES[0];
-  document.getElementById('pc-match').textContent        = `${p.compat}% match`;
-  document.getElementById('pc-name').textContent         = p.name;
-  document.getElementById('pc-age').textContent          = p.age;
-  document.getElementById('pc-location-text').textContent = p.location;
-  document.getElementById('pc-bio').textContent          = p.bio;
-
-  const traitsEl = document.getElementById('pc-traits');
-  traitsEl.innerHTML = p.traits.map(t => `<span class="pc-tag trait">${t}</span>`).join('');
-
-  const interestsEl = document.getElementById('pc-interests');
-  interestsEl.innerHTML = p.interests.map(i => `<span class="pc-tag interest">${i}</span>`).join('');
-
-  profileCard.classList.add('visible');
-}
-
-function hideProfileCard(){
-  profileCard.classList.remove('visible');
 }
 
 // ─── Wisp draw ───────────────────────────────────────────────────────────────
@@ -766,10 +427,11 @@ function drawWisps(t, opacity){
   ctx.clearRect(0, 0, wc.width, wc.height);
   if(opacity <= 0) return;
 
-  // Level 2: canvas profile preview
-  if(uiLevel === 2){ drawProfileView(opacity); return; }
-  // Level 3: DOM card handles rendering — nothing on canvas
-  if(uiLevel === 3){ ctx.clearRect(0, 0, wc.width, wc.height); return; }
+  // Level 2: profile view — no interactive wisps
+  if(uiLevel === 2){
+    drawProfileView(opacity);
+    return;
+  }
 
   const labels = uiLevel === 0 ? CATEGORY_LABELS : SNIPPET_LABELS[chosenCategoryIdx];
 
@@ -817,61 +479,16 @@ function drawWisps(t, opacity){
 }
 
 // ─── Show / hide wisps ───────────────────────────────────────────────────────
-const backBtn     = document.getElementById('back-btn');
-const introPrompt = document.getElementById('intro-prompt');
-const breadcrumb  = document.getElementById('breadcrumb');
-
-function updateBreadcrumb(){
-  const sep = ' › ';
-  const parts = [];
-  if(uiLevel >= 1) parts.push(CATEGORY_LABELS[chosenCategoryIdx].replace('\n', ' '));
-  if(uiLevel >= 2) parts.push(SNIPPET_LABELS[chosenCategoryIdx][chosenSnippetIdx].replace('\n', ' '));
-  if(uiLevel >= 3) parts.push((PROFILES[chosenSnippetIdx] || PROFILES[0]).name);
-  breadcrumb.textContent = parts.join(sep).toUpperCase();
-  breadcrumb.style.opacity = parts.length > 0 ? '1' : '0';
-}
-
 function showChoices(){
   mode = 'choosing';
-  if(uiLevel === 3){
-    showProfileCard();
-    backBtn.style.display = 'block';
-    updateBreadcrumb();
-    wc.classList.remove('active');  // card handles interaction at level 3
-    return;
-  }
   wispVisible = true;
   wc.classList.add('active');
-  backBtn.style.display = zoomHistory.length > 0 ? 'block' : 'none';
-  introPrompt.style.opacity = uiLevel === 0 ? '1' : '0';
-  updateBreadcrumb();
 }
 
 function hideChoices(){
   wispVisible = false;
-  overlayOpacity = 0;  // snap to 0 — prevents new level's wisps flashing at old opacity
-  ctx.clearRect(0, 0, wc.width, wc.height);
   wc.classList.remove('active');
-  backBtn.style.display = 'none';
-  introPrompt.style.opacity = '0';
-  hideProfileCard();
 }
-
-let _restoreLevel = 0;
-function goBack2(){
-  if(zoomHistory.length === 0) return;
-  hideChoices();
-  const prev = zoomHistory.pop();
-  targetCenter  = { x: prev.cx, y: prev.cy };
-  targetZoom    = prev.zoom;
-  zoomOutStart  = zoomLevel;
-  outElapsed    = 0;
-  lastNow       = performance.now();
-  _restoreLevel = prev.uiLevel;
-  mode = 'zoomingOut';
-}
-
-backBtn.addEventListener('click', goBack2);
 
 // ─── Click detection on wisp cores ──────────────────────────────────────────
 wc.addEventListener('click', (e) => {
@@ -880,23 +497,7 @@ wc.addEventListener('click', (e) => {
   const mx = e.clientX - rect.left;
   const my = e.clientY - rect.top;
 
-  if(uiLevel === 3) return;  // full profile is terminal
-
-  if(uiLevel === 2){
-    // Tap anywhere to zoom into full profile — focal point is screen center
-    hideChoices();
-    zoomHistory.push({ cx: currentCenter.x, cy: currentCenter.y, zoom: zoomLevel, uiLevel: 2 });
-    zoomFocalWorld  = { x: currentCenter.x, y: currentCenter.y };
-    zoomFocalFx     = 0.5;
-    zoomFocalFy     = 0.5;
-    targetZoom      = zoomLevel * 5;
-    zoomStart       = zoomLevel;
-    elapsed         = 0;
-    lastNow         = performance.now();
-    uiLevel         = 3;
-    mode            = 'zooming';
-    return;
-  }
+  if(uiLevel === 2) return;  // profile view is not interactive
 
   for(let i = 0; i < 4; i++){
     const p = wispPositions[i];
@@ -906,46 +507,24 @@ wc.addEventListener('click', (e) => {
     if(Math.sqrt(dx*dx + dy*dy) <= HIT_RADIUS){
       hideChoices();
 
-      zoomHistory.push({ cx: currentCenter.x, cy: currentCenter.y, zoom: zoomLevel, uiLevel });
-
-      // Focal point = the wisp's screen position
-      const fx = WISP_TIPS[i].fx;
-      const fy = WISP_TIPS[i].fy;
-      zoomFocalWorld  = screenToMandelbrot(fx, fy);
-      zoomFocalFx     = fx;
-      zoomFocalFy     = fy;
-      targetZoom      = zoomLevel * 5;
-      zoomStart       = zoomLevel;
-      elapsed         = 0;
-      lastNow         = performance.now();
-
       if(uiLevel === 0){
+        // Category chosen → zoom to its wisp position, show snippets
         chosenCategoryIdx = i;
+        targetCenter = screenToMandelbrot(WISP_TIPS[i].fx, WISP_TIPS[i].fy);
         uiLevel = 1;
       } else {
-        chosenSnippetIdx = i;
+        // Snippet chosen → zoom to screen center, show Sam's profile
+        targetCenter = screenToMandelbrot(0.5, 0.5);
         uiLevel = 2;
       }
 
-      mode = 'zooming';
+      zoomStart = zoomLevel;
+      elapsed   = 0;
+      lastNow   = performance.now();
+      mode      = 'zooming';
       break;
     }
   }
-});
-
-// ─── Gate ────────────────────────────────────────────────────────────────────
-const gate = document.getElementById('gate');
-
-gate.addEventListener('click', () => {
-  gate.classList.add('hidden');
-  zoomFocalWorld  = { x: currentCenter.x, y: currentCenter.y };
-  zoomFocalFx     = 0.5;
-  zoomFocalFy     = 0.5;
-  targetZoom      = zoomLevel * 5;
-  zoomStart       = zoomLevel;
-  elapsed         = 0;
-  lastNow         = performance.now();
-  mode            = 'zooming';
 });
 
 // ─── Render loop ─────────────────────────────────────────────────────────────
@@ -962,45 +541,11 @@ function frame(){
 
   if(mode === 'zooming'){
     elapsed += dt;
-    const t = Math.min(elapsed / ZOOM_DURATION, 1);
-    const eased = t < 0.5
-      ? 4*t*t*t
-      : 1 - Math.pow(-2*t+2, 3) / 2;
-
-    zoomLevel = lerp(zoomStart, targetZoom, eased);
-
-    // Keep the focal world-point locked: its screen fraction smoothly moves
-    // from where it was clicked to 0.5 (center) as zoom progresses.
-    const fx = lerp(zoomFocalFx, 0.5, eased);
-    const fy = lerp(zoomFocalFy, 0.5, eased);
-    const aspect = canvas.width / canvas.height;
-    const uvx = (fx - 0.5) * aspect;
-    const uvy = 0.5 - fy;
-    currentCenter.x = zoomFocalWorld.x - uvx / zoomLevel;
-    currentCenter.y = zoomFocalWorld.y - uvy / zoomLevel;
-
-    if(t >= 1){
-      zoomLevel = targetZoom;
-      currentCenter.x = zoomFocalWorld.x;
-      currentCenter.y = zoomFocalWorld.y;
-      showChoices();
-    }
-  } else if(mode === 'zoomingOut'){
-    outElapsed += dt;
-    const t = Math.min(outElapsed / ZOOM_DURATION, 1);
-    const eased = 1 - Math.pow(1 - t, 3);  // ease-out cubic
-    zoomLevel = lerp(zoomOutStart, targetZoom, eased);
-    currentCenter.x = lerp(currentCenter.x, targetCenter.x, 0.04);
-    currentCenter.y = lerp(currentCenter.y, targetCenter.y, 0.04);
-    if(t >= 1){
-      zoomLevel     = targetZoom;
-      zoomStart     = targetZoom;
-      currentCenter = { x: targetCenter.x, y: targetCenter.y };
-      uiLevel          = _restoreLevel;
-      // Also restore snippet index if going back past level 2
-      if(_restoreLevel < 2) chosenSnippetIdx = 0;
-      showChoices();
-    }
+    const lerpSpeed = 0.04;
+    currentCenter.x = lerp(currentCenter.x, targetCenter.x, lerpSpeed);
+    currentCenter.y = lerp(currentCenter.y, targetCenter.y, lerpSpeed);
+    zoomLevel = zoomStart * Math.exp(elapsed * ZOOM_RATE);
+    if(elapsed >= ZOOM_DURATION) showChoices();
   }
 
   // Fade overlay in/out
