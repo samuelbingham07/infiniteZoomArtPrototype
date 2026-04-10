@@ -2,22 +2,24 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Infinite Zoom Shader Prototype</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <style>
-    html, body { width:100%; height:100%; margin:0; padding:0; background:#000; overflow:hidden; }
+    html, body { width:100%; height:100%; margin:0; padding:0; background:#000; overflow:hidden; -webkit-tap-highlight-color:transparent; }
     canvas { display:block; touch-action:none; }
+    * { -webkit-tap-highlight-color:transparent; }
     #wisp-overlay {
       position:fixed; inset:0;
       pointer-events:none;
     }
     #wisp-overlay.active { pointer-events:auto; }
     #back-btn {
-      position:fixed; bottom:36px; left:50%; transform:translateX(-50%);
+      position:fixed; bottom:max(36px, env(safe-area-inset-bottom) + 16px); left:50%; transform:translateX(-50%);
       display:none;
-      padding:9px 22px;
+      padding:12px 28px;
+      touch-action:manipulation;
       background:rgba(20,30,60,0.72);
       border:1px solid rgba(140,180,255,0.35);
       border-radius:999px;
@@ -28,7 +30,7 @@
       pointer-events:auto;
       backdrop-filter:blur(6px);
       transition:opacity 0.25s, background 0.2s;
-      z-index:10;
+      z-index:20;
     }
     #back-btn:hover { background:rgba(40,60,120,0.85); }
     #breadcrumb {
@@ -51,12 +53,13 @@
       align-items:center; justify-content:center;
       gap:20px;
       cursor:pointer;
+      touch-action:manipulation;
       z-index:20;
       transition:opacity 0.8s ease;
     }
     #gate.hidden { opacity:0; pointer-events:none; }
     #gate-title {
-      font:700 22px/1.3 system-ui,sans-serif;
+      font:700 clamp(18px,5vw,22px)/1.3 system-ui,sans-serif;
       letter-spacing:0.06em;
       color:rgba(220,235,255,0.95);
       text-align:center;
@@ -84,8 +87,10 @@
     #profile-card.visible { opacity:1; pointer-events:auto; }
     #profile-card-inner {
       width:min(420px, 92vw);
-      max-height:88vh;
+      max-height:calc(100vh - 120px);
       overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
       background:rgba(8,12,28,0.88);
       border:1px solid rgba(100,150,255,0.22);
       border-radius:20px;
@@ -95,7 +100,7 @@
     }
     #profile-card-inner::-webkit-scrollbar { display:none; }
     .pc-avatar {
-      width:100%; aspect-ratio:1/1;
+      width:100%; aspect-ratio:1/1; max-height:min(420px,50vw);
       background:rgba(20,32,72,0.9);
       border-radius:18px 18px 0 0;
       display:flex; align-items:center; justify-content:center;
@@ -526,7 +531,7 @@ const zoomHistory = [];
 
 const ZOOM_DURATION      = 1.4;
 const ZOOM_RATE          = 0.55; // unused for zoom-in, kept for reference
-const HIT_RADIUS         = 34;
+const HIT_RADIUS         = 54;  // larger for finger taps
 const NUM_STRANDS        = 1;    // one trail per wisp
 const PARTICLES_PER_STRAND = 35;
 const STREAM_PERIOD      = 16.0; // seconds per particle cycle
@@ -899,14 +904,15 @@ function goBack2(){
   mode = 'zoomingOut';
 }
 
-backBtn.addEventListener('click', goBack2);
+backBtn.addEventListener('click',      goBack2);
+backBtn.addEventListener('touchstart', e => { e.preventDefault(); goBack2(); }, { passive:false });
 
-// ─── Click detection on wisp cores ──────────────────────────────────────────
-wc.addEventListener('click', (e) => {
+// ─── Click/touch detection on wisp cores ────────────────────────────────────
+function handleWispTap(clientX, clientY){
   if(!wispVisible) return;
   const rect = wc.getBoundingClientRect();
-  const mx = e.clientX - rect.left;
-  const my = e.clientY - rect.top;
+  const mx = clientX - rect.left;
+  const my = clientY - rect.top;
 
   if(uiLevel === 3) return;  // full profile is terminal
 
@@ -959,12 +965,19 @@ wc.addEventListener('click', (e) => {
       break;
     }
   }
-});
+}
+
+wc.addEventListener('click',      e => handleWispTap(e.clientX, e.clientY));
+wc.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const t = e.touches[0];
+  handleWispTap(t.clientX, t.clientY);
+}, { passive: false });
 
 // ─── Gate ────────────────────────────────────────────────────────────────────
 const gate = document.getElementById('gate');
 
-gate.addEventListener('click', () => {
+function startFromGate(){
   gate.classList.add('hidden');
   zoomFocalWorld  = { x: currentCenter.x, y: currentCenter.y };
   zoomFocalFx     = 0.5;
@@ -974,7 +987,10 @@ gate.addEventListener('click', () => {
   elapsed         = 0;
   lastNow         = performance.now();
   mode            = 'zooming';
-});
+}
+
+gate.addEventListener('click',      startFromGate);
+gate.addEventListener('touchstart', e => { e.preventDefault(); startFromGate(); }, { passive: false });
 
 // ─── Render loop ─────────────────────────────────────────────────────────────
 function lerp(a, b, t){ return a + (b - a) * t; }
