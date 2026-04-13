@@ -1071,8 +1071,10 @@ function drawProfileView(opacity){
   y += 30;
 
   // Tap hint
-  ctx.font = '500 11px system-ui,sans-serif';
-  ctx.fillStyle = 'rgba(120,160,255,0.55)';
+  ctx.font = '700 17px system-ui,sans-serif';
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillText('TAP TO OPEN FULL PROFILE', cx+1, y+1);
+  ctx.fillStyle = 'rgba(180,210,255,0.95)';
   ctx.fillText('TAP TO OPEN FULL PROFILE', cx, y);
 
   ctx.restore();
