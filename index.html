@@ -666,16 +666,25 @@ function drawLabel(text, x, y, align, dimmed, subText){
 }
 
 function wispTextAlign(g){
-  const px = -g.inDy, py = g.inDx;
-  const o1x = g.tipX + px*56, o1y = g.tipY + py*56;
-  const o2x = g.tipX - px*56, o2y = g.tipY - py*56;
-  const d1 = Math.hypot(o1x - innerWidth*0.5, o1y - innerHeight*0.5);
-  const d2 = Math.hypot(o2x - innerWidth*0.5, o2y - innerHeight*0.5);
-  const tx = d1 < d2 ? o1x : o2x;
-  const ty = d1 < d2 ? o1y : o2y;
-  const pdx = d1 < d2 ? px : -px;
-  const align = pdx > 0.1 ? 'left' : pdx < -0.1 ? 'right' : 'center';
-  return { tx, ty, align };
+  // Place the label in the quadrant that has the most screen space,
+  // guaranteeing that width-clamping in drawLabel expands AWAY from the wisp dot.
+  const fw = g.tipX / innerWidth;
+  const fh = g.tipY / innerHeight;
+  const GAP = 72;  // px clearance from tip to label anchor
+
+  if(fh < 0.35){
+    // Top edge — push label below, centred on the dot
+    return { tx: g.tipX, ty: g.tipY + GAP, align: 'center' };
+  } else if(fw > 0.65){
+    // Right edge — push label to the left
+    return { tx: g.tipX - GAP, ty: g.tipY, align: 'right' };
+  } else if(fh > 0.65){
+    // Bottom edge — push label above
+    return { tx: g.tipX, ty: g.tipY - GAP, align: 'center' };
+  } else {
+    // Left edge — push label to the right
+    return { tx: g.tipX + GAP, ty: g.tipY, align: 'left' };
+  }
 }
 
 // ─── Profile data ─────────────────────────────────────────────────────────────
