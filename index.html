@@ -681,8 +681,10 @@ function wispTextAlign(g){
     // Right edge — label extends to the left
     return { tx: g.tipX - HGAP, ty: g.tipY, align: 'right' };
   } else if(fh > 0.65){
-    // Bottom edge — label sits above the dot
-    return { tx: g.tipX, ty: g.tipY - VGAP, align: 'center' };
+    // Bottom edge — label sits above the dot, offset outward so it doesn't straddle the dot
+    const xOff   = fw > 0.5 ? 50 : fw < 0.35 ? -50 : 0;
+    const bAlign = fw > 0.5 ? 'left' : fw < 0.35 ? 'right' : 'center';
+    return { tx: g.tipX + xOff, ty: g.tipY - VGAP, align: bAlign };
   } else {
     // Left edge — label extends to the right
     return { tx: g.tipX + HGAP, ty: g.tipY, align: 'left' };
