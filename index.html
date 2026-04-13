@@ -670,20 +670,22 @@ function wispTextAlign(g){
   // guaranteeing that width-clamping in drawLabel expands AWAY from the wisp dot.
   const fw = g.tipX / innerWidth;
   const fh = g.tipY / innerHeight;
-  const GAP = 72;  // px clearance from tip to label anchor
+  // Vertical gap must clear: glow radius (44) + half max block height (39) + breathing room
+  const VGAP = 100;  // px from tip to label centre for top/bottom wisps
+  const HGAP = 72;   // px from tip to label anchor for left/right wisps
 
   if(fh < 0.35){
-    // Top edge — push label below, centred on the dot
-    return { tx: g.tipX, ty: g.tipY + GAP, align: 'center' };
+    // Top edge — label sits below the dot
+    return { tx: g.tipX, ty: g.tipY + VGAP, align: 'center' };
   } else if(fw > 0.65){
-    // Right edge — push label to the left
-    return { tx: g.tipX - GAP, ty: g.tipY, align: 'right' };
+    // Right edge — label extends to the left
+    return { tx: g.tipX - HGAP, ty: g.tipY, align: 'right' };
   } else if(fh > 0.65){
-    // Bottom edge — push label above
-    return { tx: g.tipX, ty: g.tipY - GAP, align: 'center' };
+    // Bottom edge — label sits above the dot
+    return { tx: g.tipX, ty: g.tipY - VGAP, align: 'center' };
   } else {
-    // Left edge — push label to the right
-    return { tx: g.tipX + GAP, ty: g.tipY, align: 'left' };
+    // Left edge — label extends to the right
+    return { tx: g.tipX + HGAP, ty: g.tipY, align: 'left' };
   }
 }
 
