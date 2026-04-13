@@ -176,6 +176,135 @@
       background:rgba(100,140,255,0.12);
       margin:20px 0;
     }
+    /* ── Like button ── */
+    #like-btn {
+      display:block; width:calc(100% - 44px); margin:0 22px 28px;
+      padding:14px 0;
+      border:none; border-radius:999px;
+      background:linear-gradient(135deg,rgba(255,90,130,0.85),rgba(220,60,110,0.90));
+      color:#fff;
+      font:600 14px system-ui,sans-serif;
+      letter-spacing:0.06em;
+      cursor:pointer;
+      touch-action:manipulation;
+      transition:opacity 0.2s, transform 0.15s;
+    }
+    #like-btn:active { transform:scale(0.97); }
+    #like-btn.liked {
+      background:rgba(30,40,80,0.6);
+      border:1px solid rgba(255,120,150,0.4);
+      color:rgba(255,160,180,0.85);
+    }
+    #like-btn:disabled { opacity:0.45; cursor:default; }
+    /* ── End demo button ── */
+    #end-demo-btn {
+      position:fixed; top:max(16px, env(safe-area-inset-top) + 10px); right:max(18px, env(safe-area-inset-right) + 12px);
+      display:none;
+      padding:9px 16px;
+      border:1px solid rgba(255,100,130,0.40);
+      border-radius:999px;
+      background:rgba(20,10,30,0.72);
+      color:rgba(255,170,190,0.90);
+      font:600 12px system-ui,sans-serif;
+      letter-spacing:0.07em;
+      cursor:pointer;
+      touch-action:manipulation;
+      backdrop-filter:blur(6px);
+      z-index:25;
+      transition:background 0.2s;
+    }
+    #end-demo-btn:hover { background:rgba(60,20,40,0.85); }
+    /* ── Likes overlay ── */
+    #likes-overlay {
+      position:fixed; inset:0;
+      background:rgba(4,6,18,0.96);
+      z-index:50;
+      display:none;
+      flex-direction:column;
+      align-items:center;
+      padding:max(52px,env(safe-area-inset-top)+40px) 20px max(32px,env(safe-area-inset-bottom)+20px);
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    #likes-overlay.open { display:flex; }
+    #likes-overlay h2 {
+      font:700 22px system-ui,sans-serif;
+      color:rgba(255,200,215,0.95);
+      letter-spacing:0.04em;
+      margin:0 0 6px;
+      text-align:center;
+    }
+    #likes-overlay .lo-sub {
+      font:400 13px system-ui,sans-serif;
+      color:rgba(180,160,200,0.65);
+      letter-spacing:0.05em;
+      margin-bottom:28px;
+      text-align:center;
+    }
+    .lo-card {
+      width:min(400px,92vw);
+      background:rgba(14,18,40,0.88);
+      border:1px solid rgba(255,100,130,0.20);
+      border-radius:16px;
+      padding:18px 20px;
+      margin-bottom:14px;
+      display:flex; gap:16px; align-items:flex-start;
+    }
+    .lo-avatar {
+      width:52px; height:52px; flex-shrink:0;
+      background:rgba(30,45,90,0.8);
+      border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .lo-avatar svg { width:55%; height:55%; opacity:0.5; }
+    .lo-info { flex:1; min-width:0; }
+    .lo-name {
+      font:600 16px system-ui,sans-serif;
+      color:rgba(240,245,255,0.95);
+      margin-bottom:2px;
+    }
+    .lo-meta {
+      font:400 12px system-ui,sans-serif;
+      color:rgba(140,170,255,0.65);
+      margin-bottom:6px;
+    }
+    .lo-tagline {
+      font:400 12px system-ui,sans-serif;
+      color:rgba(200,210,255,0.55);
+      font-style:italic;
+    }
+    .lo-match {
+      font:600 11px system-ui,sans-serif;
+      color:rgba(80,230,150,0.9);
+      letter-spacing:0.06em;
+      margin-top:6px;
+    }
+    #likes-empty {
+      color:rgba(180,160,200,0.50);
+      font:400 14px system-ui,sans-serif;
+      text-align:center;
+      margin-top:40px;
+    }
+    #likes-cta {
+      margin-top:28px;
+      padding:14px 36px;
+      border:none; border-radius:999px;
+      background:linear-gradient(135deg,rgba(255,90,130,0.85),rgba(180,60,200,0.85));
+      color:#fff;
+      font:600 14px system-ui,sans-serif;
+      letter-spacing:0.06em;
+      cursor:pointer;
+      touch-action:manipulation;
+    }
+    #likes-close {
+      position:absolute; top:max(14px,env(safe-area-inset-top)+8px); right:18px;
+      background:none; border:none;
+      color:rgba(200,180,220,0.65);
+      font:400 24px system-ui,sans-serif;
+      cursor:pointer;
+      padding:8px;
+      z-index:51;
+    }
     #intro-prompt {
       position:fixed; top:50%; left:50%;
       transform:translate(-50%, -50%);
@@ -224,9 +353,19 @@
       <div class="pc-section-label">My Interests</div>
       <div class="pc-tags" id="pc-interests"></div>
     </div>
+    <button id="like-btn">♡ &nbsp;SEND A LIKE</button>
   </div>
 </div>
 <button id="back-btn">&#8592; BACK</button>
+<button id="end-demo-btn">VIEW LIKES <span id="like-count">0</span>/5</button>
+<div id="likes-overlay">
+  <button id="likes-close">&#10005;</button>
+  <h2>Your Matches</h2>
+  <p class="lo-sub">Profiles you liked during the demo</p>
+  <div id="likes-list"></div>
+  <div id="likes-empty" style="display:none">You haven't liked anyone yet.<br>Go back and explore!</div>
+  <button id="likes-cta">Get Hiki to chat with them</button>
+</div>
 <div id="gate">
   <div id="gate-title">Welcome to Hiki's new<br>matching experience.</div>
   <div id="gate-sub" style="max-width:280px;text-align:center;line-height:1.5;opacity:0.7;font-size:12px;letter-spacing:0.06em;margin-bottom:4px">A preview of how matching works on Hiki —<br>explore real profiles by traits, not photos.</div>
@@ -934,6 +1073,88 @@ function drawProfileView(opacity){
 // ─── Level 3: DOM profile card ────────────────────────────────────────────────
 const profileCard = document.getElementById('profile-card');
 
+// ─── Likes state ─────────────────────────────────────────────────────────────
+const MAX_LIKES = 5;
+const likedProfileIdxs = [];  // indices into PROFILES
+
+const likeBtn      = document.getElementById('like-btn');
+const endDemoBtn   = document.getElementById('end-demo-btn');
+const likeCountEl  = document.getElementById('like-count');
+const likesOverlay = document.getElementById('likes-overlay');
+
+function updateLikeBtn(){
+  const alreadyLiked = likedProfileIdxs.includes(chosenProfileIdx);
+  const limitReached = likedProfileIdxs.length >= MAX_LIKES;
+  const p = PROFILES[chosenProfileIdx] || PROFILES[0];
+  if(alreadyLiked){
+    likeBtn.textContent = '✓  LIKED';
+    likeBtn.classList.add('liked');
+    likeBtn.disabled = false;
+  } else if(limitReached){
+    likeBtn.textContent = `LIKES FULL (${MAX_LIKES}/${MAX_LIKES})`;
+    likeBtn.classList.remove('liked');
+    likeBtn.disabled = true;
+  } else {
+    likeBtn.innerHTML = `♡ &nbsp;SEND A LIKE TO ${p.name.split(' ')[0].toUpperCase()}`;
+    likeBtn.classList.remove('liked');
+    likeBtn.disabled = false;
+  }
+}
+
+function updateEndDemoBtn(){
+  endDemoBtn.style.display = 'block';
+  likeCountEl.textContent  = likedProfileIdxs.length;
+}
+
+likeBtn.addEventListener('click', () => {
+  if(likedProfileIdxs.includes(chosenProfileIdx)) return;
+  if(likedProfileIdxs.length >= MAX_LIKES) return;
+  likedProfileIdxs.push(chosenProfileIdx);
+  updateLikeBtn();
+  updateEndDemoBtn();
+});
+likeBtn.addEventListener('touchstart', e => { e.stopPropagation(); }, { passive: true });
+
+function openLikesOverlay(){
+  const list  = document.getElementById('likes-list');
+  const empty = document.getElementById('likes-empty');
+  list.innerHTML = '';
+  if(likedProfileIdxs.length === 0){
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    likedProfileIdxs.forEach(idx => {
+      const p = PROFILES[idx];
+      list.innerHTML += `
+        <div class="lo-card">
+          <div class="lo-avatar">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="34" r="20" fill="rgba(160,200,255,0.55)"/>
+              <ellipse cx="50" cy="84" rx="30" ry="26" fill="rgba(160,200,255,0.55)"/>
+            </svg>
+          </div>
+          <div class="lo-info">
+            <div class="lo-name">${p.name}, ${p.age}</div>
+            <div class="lo-meta">${p.location} · ${p.distance}</div>
+            <div class="lo-tagline">${p.tagline}</div>
+            <div class="lo-match">${p.compat}% match</div>
+          </div>
+        </div>`;
+    });
+  }
+  likesOverlay.classList.add('open');
+}
+
+endDemoBtn.addEventListener('click',      openLikesOverlay);
+endDemoBtn.addEventListener('touchstart', e => { e.preventDefault(); openLikesOverlay(); }, { passive: false });
+
+document.getElementById('likes-close').addEventListener('click',      () => likesOverlay.classList.remove('open'));
+document.getElementById('likes-close').addEventListener('touchstart', e => { e.preventDefault(); likesOverlay.classList.remove('open'); }, { passive: false });
+
+document.getElementById('likes-cta').addEventListener('click', () => {
+  likesOverlay.classList.remove('open');
+});
+
 function showProfileCard(){
   const p = PROFILES[chosenProfileIdx] || PROFILES[0];
   document.getElementById('pc-match').textContent        = `${p.compat}% match`;
@@ -948,6 +1169,7 @@ function showProfileCard(){
   const interestsEl = document.getElementById('pc-interests');
   interestsEl.innerHTML = p.interests.map(i => `<span class="pc-tag interest">${i}</span>`).join('');
 
+  updateLikeBtn();
   profileCard.classList.add('visible');
 }
 
@@ -1169,6 +1391,7 @@ const gate = document.getElementById('gate');
 
 function startFromGate(){
   gate.classList.add('hidden');
+  updateEndDemoBtn();
   zoomFocalWorld  = { x: currentCenter.x, y: currentCenter.y };
   zoomFocalFx     = 0.5;
   zoomFocalFy     = 0.5;
