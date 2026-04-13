@@ -15,10 +15,16 @@
       pointer-events:none;
     }
     #wisp-overlay.active { pointer-events:auto; }
-    #back-btn {
+    #nav-row {
       position:fixed; bottom:max(36px, env(safe-area-inset-bottom) + 16px); left:max(24px, env(safe-area-inset-left) + 16px);
       display:none;
-      padding:12px 28px;
+      flex-direction:row; gap:10px;
+      z-index:20;
+      pointer-events:auto;
+    }
+    #nav-row.visible { display:flex; }
+    #back-btn, #restart-btn {
+      padding:12px 22px;
       touch-action:manipulation;
       background:rgba(20,30,60,0.72);
       border:1px solid rgba(140,180,255,0.35);
@@ -29,10 +35,9 @@
       cursor:pointer;
       pointer-events:auto;
       backdrop-filter:blur(6px);
-      transition:opacity 0.25s, background 0.2s;
-      z-index:20;
+      transition:background 0.2s;
     }
-    #back-btn:hover { background:rgba(40,60,120,0.85); }
+    #back-btn:hover, #restart-btn:hover { background:rgba(40,60,120,0.85); }
     #breadcrumb {
       position:fixed; top:14px; left:50%; transform:translateX(-50%);
       font:500 11px system-ui,sans-serif;
@@ -356,7 +361,10 @@
     <button id="like-btn">♡ &nbsp;SEND A LIKE</button>
   </div>
 </div>
-<button id="back-btn">&#8592; BACK</button>
+<div id="nav-row">
+  <button id="back-btn">&#8592; BACK</button>
+  <button id="restart-btn">&#8635; START OVER</button>
+</div>
 <button id="end-demo-btn">VIEW LIKES <span id="like-count">0</span>/5</button>
 <div id="likes-overlay">
   <button id="likes-close">&#10005;</button>
@@ -1251,6 +1259,8 @@ function drawWisps(t, opacity){
 
 // ─── Show / hide wisps ───────────────────────────────────────────────────────
 const backBtn     = document.getElementById('back-btn');
+const navRow      = document.getElementById('nav-row');
+const restartBtn  = document.getElementById('restart-btn');
 const introPrompt = document.getElementById('intro-prompt');
 const breadcrumb  = document.getElementById('breadcrumb');
 
@@ -1269,14 +1279,15 @@ function showChoices(){
   mode = 'choosing';
   if(uiLevel === 4){
     showProfileCard();
-    backBtn.style.display = 'block';
+    navRow.classList.add('visible');
     updateBreadcrumb();
     wc.classList.remove('active');  // card handles interaction at level 4
     return;
   }
   wispVisible = true;
   wc.classList.add('active');
-  backBtn.style.display = zoomHistory.length > 0 ? 'block' : 'none';
+  if(zoomHistory.length > 0) navRow.classList.add('visible');
+  else navRow.classList.remove('visible');
   introPrompt.style.opacity = uiLevel === 0 ? '1' : '0';
   updateBreadcrumb();
 }
@@ -1286,7 +1297,7 @@ function hideChoices(){
   overlayOpacity = 0;  // snap to 0 — prevents new level's wisps flashing at old opacity
   ctx.clearRect(0, 0, wc.width, wc.height);
   wc.classList.remove('active');
-  backBtn.style.display = 'none';
+  navRow.classList.remove('visible');
   introPrompt.style.opacity = '0';
   hideProfileCard();
 }
@@ -1307,6 +1318,25 @@ function goBack2(){
 
 backBtn.addEventListener('click',      goBack2);
 backBtn.addEventListener('touchstart', e => { e.preventDefault(); goBack2(); }, { passive:false });
+
+function goToStart(){
+  hideChoices();
+  zoomHistory.length = 0;
+  chosenCategoryIdx  = 0;
+  chosenSnippetIdx   = 0;
+  chosenProfileIdx   = 0;
+  uiLevel            = 0;
+  targetCenter       = { x: START_CX, y: START_CY };
+  targetZoom         = START_ZOOM;
+  zoomOutStart       = zoomLevel;
+  outElapsed         = 0;
+  lastNow            = performance.now();
+  _restoreLevel      = 0;
+  mode               = 'zoomingOut';
+}
+
+restartBtn.addEventListener('click',      goToStart);
+restartBtn.addEventListener('touchstart', e => { e.preventDefault(); goToStart(); }, { passive:false });
 
 // ─── Click/touch detection on wisp cores ────────────────────────────────────
 function handleWispTap(clientX, clientY){
