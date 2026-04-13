@@ -618,7 +618,7 @@ gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 // ─── UI labels ───────────────────────────────────────────────────────────────
 const CATEGORY_LABELS = [
   'Shares Same\nSpecial Interest',
-  'Lives Within\n30 Miles',
+  'Similar\nCommunication Style',
   'Shares Same\nNeurodivergent Traits',
   'Recommended\nFor You ✦',
 ];
@@ -630,8 +630,8 @@ const RECOMMENDED_CATEGORY_IDX = 3;
 const SNIPPET_LABELS = [
   // Category 0: special interest
   [ 'also really into\nvintage synths', 'reads the same\nbook series', 'competitive chess\nevery weekend', 'loves hiking\nand camping' ],
-  // Category 1: within 30 miles
-  [ 'just 4 miles\naway in Soho', 'walks the same\npark on sundays', 'same commute\nline as you', 'goes to a gym\nnear your office' ],
+  // Category 1: communication style
+  [ 'prefers texting\nover phone calls', 'needs time to\nprocess before replying', 'direct & literal —\nsays exactly what they mean', 'low-pressure,\nno read-receipt anxiety' ],
   // Category 2: neurodivergent traits
   [ 'also diagnosed\nwith ADHD', 'uses the same\ncoping routines', 'hyperfocuses on\nthe same things', 'navigates the\nsame sensory stuff' ],
   // Category 3: recommended
@@ -984,16 +984,57 @@ const PROFILES = [
     traits: ['Generalised anxiety', 'Highly sensitive person', 'Empathic', 'Needs recovery time'],
     interests: ['Spoken word poetry', 'Yoga & somatic work', 'Afrobeat music', 'Independent cinema'],
   },
+  // ── Communication-style profiles (16–19) ──────────────────────────────────
+  // NOTE: to adjust age range for different demo users, search "age:" in this block.
+  // 16
+  {
+    name: 'Sam Whitfield', age: 29,
+    tagline: 'writer · tea drinker · autistic',
+    compat: 89, distance: '6 miles away', location: 'Bermondsey, London',
+    bio: 'Phone calls feel like ambushes. Texts give me time to say what I actually mean, not just what comes out first. I\'m warm and funny in writing — I promise the in-person version exists too, it just needs a bit of warming up.',
+    traits: ['Autistic', 'Written communication preference', 'Processing lag', 'Selective mutism (mild)'],
+    interests: ['Short fiction', 'Specialty coffee', 'Cryptic crosswords', 'Vintage maps'],
+  },
+  // 17
+  {
+    name: 'Dara Mensah', age: 27,
+    tagline: 'filmmaker · slow responder · ADHD',
+    compat: 85, distance: '9 miles away', location: 'Lewisham, London',
+    bio: 'I take hours to reply sometimes — not because I don\'t care, because I\'m either deep in an edit or I\'ve opened the message and lost the thread. I need a partner who reads slow replies as thoughtful, not avoidant.',
+    traits: ['ADHD', 'Time blindness', 'Rejection sensitivity', 'Deep processor'],
+    interests: ['Documentary filmmaking', 'Afrobeat & highlife', 'Photography zines', 'Long walks at dusk'],
+  },
+  // 18
+  {
+    name: 'Felix Hartmann', age: 31,
+    tagline: 'engineer · board gamer · direct communicator',
+    compat: 87, distance: '11 miles away', location: 'Hoxton, London',
+    bio: 'I say what I mean and I mean what I say. I don\'t do hints, subtext, or "I\'m fine" when I\'m not. It sounds blunt but it\'s actually just respect — I figure you\'d rather know. Looking for someone who operates the same way.',
+    traits: ['Autistic', 'Literal communicator', 'Low tolerance for ambiguity', 'Consistent and reliable'],
+    interests: ['Systems engineering', 'Strategy & war games', 'Mechanical keyboards', 'Speculative fiction'],
+  },
+  // 19
+  {
+    name: 'Rosa Park', age: 25,
+    tagline: 'illustrator · soft life · anxiety',
+    compat: 82, distance: '7 miles away', location: 'Streatham, London',
+    bio: 'Read receipts make my chest tight and I\'ve left every group chat I\'ve ever been in. I communicate best when there\'s no pressure to respond immediately — voice notes, long emails, a letter even. I\'m not slow, I\'m just deliberate.',
+    traits: ['Generalised anxiety', 'Communication anxiety', 'Highly sensitive', 'Needs low-pressure space'],
+    interests: ['Editorial illustration', 'Plant care', 'Studio Ghibli', 'Handwritten letters'],
+  },
 ];
+// ── Age range note ───────────────────────────────────────────────────────────
+// All profile ages are set above. To shift the range for a different demo
+// audience (e.g. 40–60), find-replace the age values in the profiles above.
 
 // Which 4 profiles to show at level 2 for each [catIdx][snippetIdx] combination
-// Rows = category (0=interests, 1=location, 2=ND traits, 3=recommended)
+// Rows = category (0=interests, 1=comms style, 2=ND traits, 3=recommended)
 // Cols = snippet within that category
 const PROFILE_SELECTION = [
-  [ [0,4,9,8],  [1,15,7,10], [2,12,6,14], [10,2,8,13] ],
-  [ [0,5,9,11], [15,10,13,8],[7,6,12,2],  [14,4,0,3]  ],
-  [ [0,4,9,14], [5,15,11,7], [0,2,12,6],  [3,13,8,10] ],
-  [ [0,1,2,3],  [4,7,9,10],  [6,12,15,5], [11,13,8,14]],
+  [ [0,4,9,8],   [1,15,7,10],  [2,12,6,14],  [10,2,8,13]  ],  // interests
+  [ [16,9,1,12], [17,7,5,15],  [18,2,6,0],   [19,3,13,10] ],  // comms style: async / processing time / direct / low-pressure
+  [ [0,4,9,14],  [5,15,11,7],  [0,2,12,6],   [3,13,8,10]  ],  // ND traits
+  [ [0,1,2,3],   [4,7,9,10],   [6,12,15,5],  [11,13,8,14] ],  // recommended
 ];
 
 // Blank profile avatar — circle with generic person silhouette
