@@ -197,7 +197,7 @@
 <canvas id="gl"></canvas>
 <canvas id="wisp-overlay"></canvas>
 <div id="breadcrumb"></div>
-<div id="intro-prompt">Choose a trait category to explore</div>
+<div id="intro-prompt">Choose a trait to start exploring</div>
 <div id="profile-card">
   <div id="profile-card-inner">
     <div class="pc-avatar">
@@ -228,7 +228,8 @@
 </div>
 <button id="back-btn">&#8592; BACK</button>
 <div id="gate">
-  <div id="gate-title">Explore profiles based on<br>traits, not photos.</div>
+  <div id="gate-title">Welcome to Hiki's new<br>matching experience.</div>
+  <div id="gate-sub" style="max-width:280px;text-align:center;line-height:1.5;opacity:0.7;font-size:12px;letter-spacing:0.06em;margin-bottom:4px">A preview of how matching works on Hiki —<br>explore real profiles by traits, not photos.</div>
   <div id="gate-sub">TAP ANYWHERE TO BEGIN</div>
 </div>
 
@@ -472,8 +473,11 @@ const CATEGORY_LABELS = [
   'Shares Same\nSpecial Interest',
   'Lives Within\n30 Miles',
   'Shares Same\nNeurodivergent Traits',
-  'Recommended\nFor You',
+  'Recommended\nFor You ✦',
 ];
+
+// Category 3 skips the snippet step — use snippet slot 0 of its selection grid
+const RECOMMENDED_CATEGORY_IDX = 3;
 
 // Level 1 snippets — 4 sets, one per category, each with 4 profile snippets
 const SNIPPET_LABELS = [
@@ -500,9 +504,10 @@ function screenToMandelbrot(fx, fy){
 
 // ─── State ───────────────────────────────────────────────────────────────────
 let mode             = 'idle';
-let uiLevel          = 0;   // 0=categories  1=snippets  2=profile
+let uiLevel          = 0;   // 0=categories  1=snippets  2=profiles  3=preview  4=full-card
 let chosenCategoryIdx = 0;
 let chosenSnippetIdx  = 0;
+let chosenProfileIdx  = 0;
 let elapsed          = 0;
 let outElapsed       = 0;
 let lastNow   = performance.now();
@@ -654,6 +659,7 @@ function wispTextAlign(g){
 
 // ─── Profile data ─────────────────────────────────────────────────────────────
 const PROFILES = [
+  // 0
   {
     name: 'Alex Rivera', age: 27,
     tagline: 'rock climber · synth nerd · ADHD',
@@ -662,6 +668,7 @@ const PROFILES = [
     traits: ['ADHD', 'Hyperfocus tendencies', 'Sensory-seeking', 'Rejection sensitive'],
     interests: ['Vintage & modular synths', 'Rock climbing', 'Sci-fi novels', 'Analogue photography'],
   },
+  // 1
   {
     name: 'Maya Okonkwo', age: 24,
     tagline: 'bookworm · night owl · dyslexic',
@@ -670,6 +677,7 @@ const PROFILES = [
     traits: ['Dyslexia', 'Night owl rhythm', 'High empathy', 'Auditory processing'],
     interests: ['Fantasy & literary fiction', 'Long-form podcasts', 'Cooking from scratch', 'Thrift shopping'],
   },
+  // 2
   {
     name: 'Jordan Hale', age: 30,
     tagline: 'trail runner · chess obsessive · autistic',
@@ -678,6 +686,7 @@ const PROFILES = [
     traits: ['Autistic', 'Routine-driven', 'Literal communicator', 'Detail-oriented'],
     interests: ['Trail & ultra running', 'Chess', 'Bird watching', 'Topology & maths'],
   },
+  // 3
   {
     name: 'Priya Nair', age: 26,
     tagline: 'painter · tea collector · sensory processing',
@@ -686,6 +695,124 @@ const PROFILES = [
     traits: ['Sensory processing differences', 'Introvert', 'Low-stimulus needs', 'Deep focus'],
     interests: ['Watercolour & oil painting', 'Tea ceremony', 'Ceramics', 'Slow travel'],
   },
+  // 4
+  {
+    name: 'Kai Morales', age: 25,
+    tagline: 'producer · skater · ADHD brain',
+    compat: 89, distance: '6 miles away', location: 'Brixton, London',
+    bio: 'I make beats at 2am and skate at 7am. My energy is chaotic and my apartment reflects that. I\'m great at starting things and working on finishing them. Looking for someone who can match my curiosity, not my schedule.',
+    traits: ['ADHD', 'Impulsivity', 'Creative bursts', 'Sleep irregularity'],
+    interests: ['Music production', 'Skateboarding', 'Sampling & vinyl', 'Street photography'],
+  },
+  // 5
+  {
+    name: 'Sasha Bloom', age: 28,
+    tagline: 'ceramicist · slow mover · anxiety & dyscalculia',
+    compat: 82, distance: '9 miles away', location: 'Islington, London',
+    bio: 'I make pots and take long walks. Numbers don\'t stick in my brain the way words do, and new environments take a bit of warming up. I prefer quality over quantity in people and plans.',
+    traits: ['Dyscalculia', 'Generalised anxiety', 'High sensitivity', 'Slow to warm up'],
+    interests: ['Ceramics & wheel throwing', 'Yoga & breathwork', 'Botanical illustration', 'Slow cinema'],
+  },
+  // 6
+  {
+    name: 'Theo Adeyemi', age: 22,
+    tagline: 'astronomy nerd · anime marathon · autistic',
+    compat: 86, distance: '11 miles away', location: 'Camberwell, London',
+    bio: 'I track satellites and can name every Studio Ghibli score from memory. I don\'t do small talk well but I give a lot to conversations that actually matter. Ideal date: planetarium, then ramen, then arguing about narrative structure.',
+    traits: ['Autistic', 'Monotropic focus', 'Direct communicator', 'Pattern thinker'],
+    interests: ['Amateur astronomy', 'Anime & manga', 'Astrophysics', 'Strategy board games'],
+  },
+  // 7
+  {
+    name: 'Lily Chen', age: 29,
+    tagline: 'dancer · home baker · ADHD + dyspraxia',
+    compat: 87, distance: '4 miles away', location: 'Bethnal Green, London',
+    bio: 'I move my body to understand it — contemporary dance has been the best therapy I\'ve found. I drop things constantly, lose my keys daily, and bake elaborate cakes when I\'m overwhelmed. It works for me.',
+    traits: ['ADHD', 'Dyspraxia', 'Body-based regulation', 'Emotionally expressive'],
+    interests: ['Contemporary dance', 'Sourdough & patisserie', 'Alt-pop music', 'Journalling'],
+  },
+  // 8
+  {
+    name: 'Remi Osei', age: 31,
+    tagline: 'photographer · cyclist · Tourette\'s',
+    compat: 84, distance: '8 miles away', location: 'Clapham, London',
+    bio: 'I photograph overlooked moments and cycle everywhere. Tics are part of the deal — most people relax after five minutes. I\'m patient, observant, and I notice things other people miss.',
+    traits: ['Tourette\'s syndrome', 'High observation', 'Physical restlessness', 'Calm under pressure'],
+    interests: ['Documentary photography', 'Long-distance cycling', 'Jazz', 'Urban history'],
+  },
+  // 9
+  {
+    name: 'Ines Ferreira', age: 23,
+    tagline: 'designer · gamer · AuDHD',
+    compat: 90, distance: '2 miles away', location: 'Shoreditch, London',
+    bio: 'I design by day and speedrun indie games by night. I mask a lot at work so by evenings I need low-demand space. I communicate best in writing but I\'m trying. I\'m not flaky — I just need the plan confirmed twice.',
+    traits: ['AuDHD', 'Masking fatigue', 'Hyperfocus', 'Needs predictability'],
+    interests: ['UI/UX design', 'Indie & puzzle games', 'Electronic music', 'Graphic novels'],
+  },
+  // 10
+  {
+    name: 'Milo Barnes', age: 27,
+    tagline: 'woodworker · plant nerd · dyslexic',
+    compat: 81, distance: '14 miles away', location: 'Stoke Newington, London',
+    bio: 'I work with my hands because my hands understand things my reading doesn\'t. My flat is half workshop, half indoor forest. I\'m a slow reader, a good listener, and terrible at texting back quickly.',
+    traits: ['Dyslexia', 'Kinaesthetic learner', 'Methodical', 'Poor working memory'],
+    interests: ['Furniture making', 'Botany & foraging', 'Hiking', 'Analogue photography'],
+  },
+  // 11
+  {
+    name: 'Zara Quinn', age: 25,
+    tagline: 'theatre director · cook · dyscalculia + anxiety',
+    compat: 79, distance: '10 miles away', location: 'Elephant & Castle, London',
+    bio: 'I direct devised theatre and feed people. I get overwhelmed in large groups but shine in small ones. Numbers are my nemesis but I can tell you exactly what\'s emotionally subtext in any scene.',
+    traits: ['Dyscalculia', 'Social anxiety', 'Emotionally intuitive', 'Perfectionism'],
+    interests: ['Devised theatre', 'Experimental cooking', 'Literary fiction', 'True crime podcasts'],
+  },
+  // 12
+  {
+    name: 'Noah Okafor', age: 32,
+    tagline: 'jazz pianist · birdwatcher · autistic',
+    compat: 86, distance: '15 miles away', location: 'Crystal Palace, London',
+    bio: 'I practice scales for two hours every morning and spend weekends in parks with binoculars. I find most social situations exhausting but music and nature recharge me completely. I\'m looking for someone who respects solitude.',
+    traits: ['Autistic', 'Sensory-sensitive', 'Structured routine', 'Deeply focused'],
+    interests: ['Jazz piano & theory', 'Bird watching', 'Classical composition', 'Maths puzzles'],
+  },
+  // 13
+  {
+    name: 'Camille Rousseau', age: 26,
+    tagline: 'ceramicist · plant parent · SPD + dyspraxia',
+    compat: 80, distance: '6 miles away', location: 'Brixton, London',
+    bio: 'Clay is the only material that forgives my coordination. My flat has 47 plants and a kiln. I trip over most things but I\'m very careful with people. I need quiet time and I give it back in handmade mugs.',
+    traits: ['Sensory processing differences', 'Dyspraxia', 'Interoceptive awareness', 'Gentle pace'],
+    interests: ['Ceramics', 'Plant propagation', 'Foraging', 'Ambient music'],
+  },
+  // 14
+  {
+    name: 'Ezra Singh', age: 24,
+    tagline: 'lyricist · footballer · ADHD',
+    compat: 83, distance: '16 miles away', location: 'Walthamstow, London',
+    bio: 'I write rap verses on the bus and play five-a-side three times a week. I have a lot of energy and I\'m still figuring out where to put it all. I\'m impulsive but I show up. Every time.',
+    traits: ['ADHD', 'High energy', 'Risk-taking', 'Emotional intensity'],
+    interests: ['Rap & lyricism', 'Football', 'Grime music history', 'Spoken word events'],
+  },
+  // 15
+  {
+    name: 'Amara Diallo', age: 28,
+    tagline: 'poet · yogi · anxiety + HSP',
+    compat: 88, distance: '5 miles away', location: 'Hackney, London',
+    bio: 'I write poetry about the city and practice yoga to survive it. I absorb other people\'s emotions like a sponge so I have strict boundaries — not walls, just limits. I want depth, stillness, and someone who means what they say.',
+    traits: ['Generalised anxiety', 'Highly sensitive person', 'Empathic', 'Needs recovery time'],
+    interests: ['Spoken word poetry', 'Yoga & somatic work', 'Afrobeat music', 'Independent cinema'],
+  },
+];
+
+// Which 4 profiles to show at level 2 for each [catIdx][snippetIdx] combination
+// Rows = category (0=interests, 1=location, 2=ND traits, 3=recommended)
+// Cols = snippet within that category
+const PROFILE_SELECTION = [
+  [ [0,4,9,8],  [1,15,7,10], [2,12,6,14], [10,2,8,13] ],
+  [ [0,5,9,11], [15,10,13,8],[7,6,12,2],  [14,4,0,3]  ],
+  [ [0,4,9,14], [5,15,11,7], [0,2,12,6],  [3,13,8,10] ],
+  [ [0,1,2,3],  [4,7,9,10],  [6,12,15,5], [11,13,8,14]],
 ];
 
 // Blank profile avatar — circle with generic person silhouette
@@ -718,7 +845,7 @@ function drawProfileView(opacity){
 
   const cx = innerWidth  * 0.5;
   const cy = innerHeight * 0.5;
-  const profile = PROFILES[chosenSnippetIdx] || PROFILES[0];
+  const profile = PROFILES[chosenProfileIdx] || PROFILES[0];
 
   // Glow
   const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 120);
@@ -774,7 +901,7 @@ function drawProfileView(opacity){
 const profileCard = document.getElementById('profile-card');
 
 function showProfileCard(){
-  const p = PROFILES[chosenSnippetIdx] || PROFILES[0];
+  const p = PROFILES[chosenProfileIdx] || PROFILES[0];
   document.getElementById('pc-match').textContent        = `${p.compat}% match`;
   document.getElementById('pc-name').textContent         = p.name;
   document.getElementById('pc-age').textContent          = p.age;
@@ -799,12 +926,19 @@ function drawWisps(t, opacity){
   ctx.clearRect(0, 0, wc.width, wc.height);
   if(opacity <= 0) return;
 
-  // Level 2: canvas profile preview
-  if(uiLevel === 2){ drawProfileView(opacity); return; }
-  // Level 3: DOM card handles rendering — nothing on canvas
-  if(uiLevel === 3){ ctx.clearRect(0, 0, wc.width, wc.height); return; }
+  // Level 3: canvas profile preview
+  if(uiLevel === 3){ drawProfileView(opacity); return; }
+  // Level 4: DOM card handles rendering — nothing on canvas
+  if(uiLevel === 4){ ctx.clearRect(0, 0, wc.width, wc.height); return; }
 
-  const labels = uiLevel === 0 ? CATEGORY_LABELS : SNIPPET_LABELS[chosenCategoryIdx];
+  let labels;
+  if(uiLevel === 0)      labels = CATEGORY_LABELS;
+  else if(uiLevel === 1) labels = SNIPPET_LABELS[chosenCategoryIdx];
+  else {
+    // Level 2: show 4 profile names as wisp labels
+    const idxs = PROFILE_SELECTION[chosenCategoryIdx][chosenSnippetIdx];
+    labels = idxs.map(i => PROFILES[i].name + '\n' + PROFILES[i].age + ' · ' + PROFILES[i].location.split(',')[0]);
+  }
 
   ctx.save();
   ctx.globalAlpha = opacity;
@@ -844,6 +978,25 @@ function drawWisps(t, opacity){
     drawDot(g.tipX, g.tipY, 8);
     const { tx, ty, align } = wispTextAlign(g);
     drawLabel(labels[i], tx, ty, align, false);
+
+    // At level 2, draw compat% + tagline as a dimmed sub-label below
+    if(uiLevel === 2){
+      const idxs = PROFILE_SELECTION[chosenCategoryIdx][chosenSnippetIdx];
+      const prof = PROFILES[idxs[i]];
+      const lineH = 19;
+      const linesAbove = labels[i].split('\n').length;
+      const subY = ty + linesAbove * lineH * 0.5 + 6;
+      const reasonText = chosenCategoryIdx === RECOMMENDED_CATEGORY_IDX
+        ? `${prof.compat}% match · ${prof.tagline.split(' · ')[0]}`
+        : `${prof.compat}% · ${prof.tagline.split(' · ')[0]}`;
+      ctx.save();
+      ctx.globalAlpha *= 0.65;
+      ctx.font = '500 10px system-ui,sans-serif';
+      ctx.textAlign = align;
+      ctx.fillStyle = 'rgba(120,200,160,0.9)';
+      ctx.fillText(reasonText.toUpperCase(), tx + (align === 'center' ? 0 : 0), subY + lineH);
+      ctx.restore();
+    }
   }
 
   ctx.restore();
@@ -857,20 +1010,21 @@ const breadcrumb  = document.getElementById('breadcrumb');
 function updateBreadcrumb(){
   const sep = ' › ';
   const parts = [];
-  if(uiLevel >= 1) parts.push(CATEGORY_LABELS[chosenCategoryIdx].replace('\n', ' '));
-  if(uiLevel >= 2) parts.push(SNIPPET_LABELS[chosenCategoryIdx][chosenSnippetIdx].replace('\n', ' '));
-  if(uiLevel >= 3) parts.push((PROFILES[chosenSnippetIdx] || PROFILES[0]).name);
+  if(uiLevel >= 1) parts.push(CATEGORY_LABELS[chosenCategoryIdx].replace('\n', ' ').replace(' ✦',''));
+  if(uiLevel >= 2 && chosenCategoryIdx !== RECOMMENDED_CATEGORY_IDX)
+    parts.push(SNIPPET_LABELS[chosenCategoryIdx][chosenSnippetIdx].replace('\n', ' '));
+  if(uiLevel >= 3) parts.push((PROFILES[chosenProfileIdx] || PROFILES[0]).name);
   breadcrumb.textContent = parts.join(sep).toUpperCase();
   breadcrumb.style.opacity = parts.length > 0 ? '1' : '0';
 }
 
 function showChoices(){
   mode = 'choosing';
-  if(uiLevel === 3){
+  if(uiLevel === 4){
     showProfileCard();
     backBtn.style.display = 'block';
     updateBreadcrumb();
-    wc.classList.remove('active');  // card handles interaction at level 3
+    wc.classList.remove('active');  // card handles interaction at level 4
     return;
   }
   wispVisible = true;
@@ -914,12 +1068,12 @@ function handleWispTap(clientX, clientY){
   const mx = clientX - rect.left;
   const my = clientY - rect.top;
 
-  if(uiLevel === 3) return;  // full profile is terminal
+  if(uiLevel === 4) return;  // full profile is terminal
 
-  if(uiLevel === 2){
-    // Tap anywhere to zoom into full profile — focal point is screen center
+  if(uiLevel === 3){
+    // Tap anywhere to open full profile card
     hideChoices();
-    zoomHistory.push({ cx: currentCenter.x, cy: currentCenter.y, zoom: zoomLevel, uiLevel: 2 });
+    zoomHistory.push({ cx: currentCenter.x, cy: currentCenter.y, zoom: zoomLevel, uiLevel: 3 });
     zoomFocalWorld  = { x: currentCenter.x, y: currentCenter.y };
     zoomFocalFx     = 0.5;
     zoomFocalFy     = 0.5;
@@ -927,7 +1081,7 @@ function handleWispTap(clientX, clientY){
     zoomStart       = zoomLevel;
     elapsed         = 0;
     lastNow         = performance.now();
-    uiLevel         = 3;
+    uiLevel         = 4;
     mode            = 'zooming';
     return;
   }
@@ -955,10 +1109,21 @@ function handleWispTap(clientX, clientY){
 
       if(uiLevel === 0){
         chosenCategoryIdx = i;
-        uiLevel = 1;
-      } else {
+        if(i === RECOMMENDED_CATEGORY_IDX){
+          // Skip snippet step — go straight to the 4 recommended profiles
+          chosenSnippetIdx = 0;
+          uiLevel = 2;
+        } else {
+          uiLevel = 1;
+        }
+      } else if(uiLevel === 1){
         chosenSnippetIdx = i;
         uiLevel = 2;
+      } else {
+        // Level 2: pick a specific profile
+        const idxs = PROFILE_SELECTION[chosenCategoryIdx][chosenSnippetIdx];
+        chosenProfileIdx = idxs[i];
+        uiLevel = 3;
       }
 
       mode = 'zooming';
@@ -1041,8 +1206,8 @@ function frame(){
       zoomStart     = targetZoom;
       currentCenter = { x: targetCenter.x, y: targetCenter.y };
       uiLevel          = _restoreLevel;
-      // Also restore snippet index if going back past level 2
-      if(_restoreLevel < 2) chosenSnippetIdx = 0;
+      if(_restoreLevel < 2) chosenSnippetIdx  = 0;
+      if(_restoreLevel < 3) chosenProfileIdx  = 0;
       showChoices();
     }
   }
