@@ -617,11 +617,20 @@ function drawDot(x, y, r){
   ctx.fill();
 }
 
-function drawLabel(text, x, y, align, dimmed){
-  const lines = text.split('\n');
-  const lineH = 19, pad = 14;
-  const blockH = lines.length * lineH;
-  const estW = Math.max(...lines.map(l => l.length)) * 8.5;
+function drawLabel(text, x, y, align, dimmed, subText){
+  const mainLines = text.split('\n');
+  const subLines  = subText ? [subText] : [];
+  const allLines  = [...mainLines, ...subLines];
+
+  const mainSz = dimmed ? 16 : 18;  // ~35% bigger than old 12/13px
+  const subSz  = 13;
+  const lineH  = 26;
+  const pad    = 22;
+
+  const blockH = allLines.length * lineH;
+  // Estimate width — main lines use ~mainSz*0.7 per char, sub slightly smaller
+  const estW = Math.max(...mainLines.map(l => l.length * mainSz * 0.72),
+                        ...subLines.map(l => l.length * subSz * 0.72));
 
   let cx = x;
   if(align === 'left')   cx = Math.min(x, innerWidth  - estW - pad);
@@ -632,22 +641,34 @@ function drawLabel(text, x, y, align, dimmed){
   if(y - blockH*0.5 < pad)             cy = y + (pad - (y - blockH*0.5));
   if(y + blockH*0.5 > innerHeight-pad) cy = y - ((y + blockH*0.5) - (innerHeight-pad));
 
-  ctx.font      = dimmed ? '500 12px system-ui,sans-serif' : '600 13px system-ui,sans-serif';
   ctx.textAlign = align;
-  const fg = dimmed ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.88)';
-  lines.forEach((line, li) => {
-    const lx = cx, ly = cy - blockH*0.5 + li*lineH + 6;
-    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  const fg = dimmed ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.92)';
+
+  mainLines.forEach((line, li) => {
+    ctx.font = dimmed
+      ? `500 ${mainSz}px system-ui,sans-serif`
+      : `600 ${mainSz}px system-ui,sans-serif`;
+    const lx = cx, ly = cy - blockH*0.5 + li*lineH + lineH*0.72;
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
     ctx.fillText(line.toUpperCase(), lx+1, ly+1);
     ctx.fillStyle = fg;
+    ctx.fillText(line.toUpperCase(), lx, ly);
+  });
+
+  subLines.forEach((line, li) => {
+    ctx.font = `500 ${subSz}px system-ui,sans-serif`;
+    const lx = cx, ly = cy - blockH*0.5 + (mainLines.length + li)*lineH + lineH*0.72;
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillText(line.toUpperCase(), lx+1, ly+1);
+    ctx.fillStyle = 'rgba(100,210,150,0.9)';
     ctx.fillText(line.toUpperCase(), lx, ly);
   });
 }
 
 function wispTextAlign(g){
   const px = -g.inDy, py = g.inDx;
-  const o1x = g.tipX + px*36, o1y = g.tipY + py*36;
-  const o2x = g.tipX - px*36, o2y = g.tipY - py*36;
+  const o1x = g.tipX + px*56, o1y = g.tipY + py*56;
+  const o2x = g.tipX - px*56, o2y = g.tipY - py*56;
   const d1 = Math.hypot(o1x - innerWidth*0.5, o1y - innerHeight*0.5);
   const d2 = Math.hypot(o2x - innerWidth*0.5, o2y - innerHeight*0.5);
   const tx = d1 < d2 ? o1x : o2x;
@@ -977,26 +998,17 @@ function drawWisps(t, opacity){
     const g = wispGeom[i];
     drawDot(g.tipX, g.tipY, 8);
     const { tx, ty, align } = wispTextAlign(g);
-    drawLabel(labels[i], tx, ty, align, false);
 
-    // At level 2, draw compat% + tagline as a dimmed sub-label below
+    let subText = null;
     if(uiLevel === 2){
       const idxs = PROFILE_SELECTION[chosenCategoryIdx][chosenSnippetIdx];
-      const prof = PROFILES[idxs[i]];
-      const lineH = 19;
-      const linesAbove = labels[i].split('\n').length;
-      const subY = ty + linesAbove * lineH * 0.5 + 6;
-      const reasonText = chosenCategoryIdx === RECOMMENDED_CATEGORY_IDX
+      const prof  = PROFILES[idxs[i]];
+      subText = chosenCategoryIdx === RECOMMENDED_CATEGORY_IDX
         ? `${prof.compat}% match · ${prof.tagline.split(' · ')[0]}`
         : `${prof.compat}% · ${prof.tagline.split(' · ')[0]}`;
-      ctx.save();
-      ctx.globalAlpha *= 0.65;
-      ctx.font = '500 10px system-ui,sans-serif';
-      ctx.textAlign = align;
-      ctx.fillStyle = 'rgba(120,200,160,0.9)';
-      ctx.fillText(reasonText.toUpperCase(), tx + (align === 'center' ? 0 : 0), subY + lineH);
-      ctx.restore();
     }
+
+    drawLabel(labels[i], tx, ty, align, false, subText);
   }
 
   ctx.restore();
