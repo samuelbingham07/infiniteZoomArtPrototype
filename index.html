@@ -365,14 +365,14 @@
   <button id="back-btn">&#8592; BACK</button>
   <button id="restart-btn">&#8635; START OVER</button>
 </div>
-<button id="end-demo-btn">VIEW LIKES <span id="like-count">0</span>/5</button>
+<button id="end-demo-btn">FRIEND REQUESTS <span id="like-count">0</span>/5</button>
 <div id="likes-overlay">
   <button id="likes-close">&#10005;</button>
-  <h2>Your Matches</h2>
-  <p class="lo-sub">Profiles you liked during the demo</p>
+  <h2>Your Friend Requests</h2>
+  <p class="lo-sub">People you'd like to connect with</p>
   <div id="likes-list"></div>
-  <div id="likes-empty" style="display:none">You haven't liked anyone yet.<br>Go back and explore!</div>
-  <button id="likes-cta">Get Hiki to chat with them</button>
+  <div id="likes-empty" style="display:none">You haven't added anyone yet.<br>Go back and explore!</div>
+  <button id="likes-cta">Find them on Hiki</button>
 </div>
 <div id="gate">
   <div id="gate-title">Welcome to Hiki's new<br>matching experience.</div>
@@ -845,7 +845,7 @@ const PROFILES = [
     name: 'Alex Rivera', age: 27,
     tagline: 'rock climber · synth nerd · ADHD',
     compat: 91, distance: '3 miles away', location: 'Shoreditch, London',
-    bio: 'I hyperfocus hard — usually on modular synths or the next bouldering project. I find small talk exhausting but could talk for hours about the things I love. Looking for someone who gets that intensity, not just tolerates it.',
+    bio: 'I hyperfocus hard — usually on modular synths or the next bouldering project. I find small talk exhausting but could talk for hours about the things I love. Looking for a friend who gets that intensity, not just tolerates it.',
     traits: ['ADHD', 'Hyperfocus tendencies', 'Sensory-seeking', 'Rejection sensitive'],
     interests: ['Vintage & modular synths', 'Rock climbing', 'Sci-fi novels', 'Analogue photography'],
   },
@@ -872,7 +872,7 @@ const PROFILES = [
     name: 'Priya Nair', age: 26,
     tagline: 'painter · tea collector · sensory processing',
     compat: 83, distance: '5 miles away', location: 'Dalston, London',
-    bio: 'I paint slow, textured abstracts and own somewhere around 40 loose-leaf teas. Loud venues wipe me out for days so I tend toward quieter plans. I\'m looking for someone who\'s okay with the odd sensory day and doesn\'t need constant energy from me.',
+    bio: 'I paint slow, textured abstracts and own somewhere around 40 loose-leaf teas. Loud venues wipe me out for days so I tend toward quieter plans. I\'m looking for a friend who\'s okay with the odd sensory day and doesn\'t need constant energy from me.',
     traits: ['Sensory processing differences', 'Introvert', 'Low-stimulus needs', 'Deep focus'],
     interests: ['Watercolour & oil painting', 'Tea ceremony', 'Ceramics', 'Slow travel'],
   },
@@ -881,7 +881,7 @@ const PROFILES = [
     name: 'Kai Morales', age: 25,
     tagline: 'producer · skater · ADHD brain',
     compat: 89, distance: '6 miles away', location: 'Brixton, London',
-    bio: 'I make beats at 2am and skate at 7am. My energy is chaotic and my apartment reflects that. I\'m great at starting things and working on finishing them. Looking for someone who can match my curiosity, not my schedule.',
+    bio: 'I make beats at 2am and skate at 7am. My energy is chaotic and my apartment reflects that. I\'m great at starting things and working on finishing them. Looking for a friend who can match my curiosity, not my schedule.',
     traits: ['ADHD', 'Impulsivity', 'Creative bursts', 'Sleep irregularity'],
     interests: ['Music production', 'Skateboarding', 'Sampling & vinyl', 'Street photography'],
   },
@@ -899,7 +899,7 @@ const PROFILES = [
     name: 'Theo Adeyemi', age: 22,
     tagline: 'astronomy nerd · anime marathon · autistic',
     compat: 86, distance: '11 miles away', location: 'Camberwell, London',
-    bio: 'I track satellites and can name every Studio Ghibli score from memory. I don\'t do small talk well but I give a lot to conversations that actually matter. Ideal date: planetarium, then ramen, then arguing about narrative structure.',
+    bio: 'I track satellites and can name every Studio Ghibli score from memory. I don\'t do small talk well but I give a lot to conversations that actually matter. Ideal hangout: planetarium, then ramen, then arguing about narrative structure.',
     traits: ['Autistic', 'Monotropic focus', 'Direct communicator', 'Pattern thinker'],
     interests: ['Amateur astronomy', 'Anime & manga', 'Astrophysics', 'Strategy board games'],
   },
@@ -953,7 +953,7 @@ const PROFILES = [
     name: 'Noah Okafor', age: 32,
     tagline: 'jazz pianist · birdwatcher · autistic',
     compat: 86, distance: '15 miles away', location: 'Crystal Palace, London',
-    bio: 'I practice scales for two hours every morning and spend weekends in parks with binoculars. I find most social situations exhausting but music and nature recharge me completely. I\'m looking for someone who respects solitude.',
+    bio: 'I practice scales for two hours every morning and spend weekends in parks with binoculars. I find most social situations exhausting but music and nature recharge me completely. I\'m looking for a friend who respects solitude.',
     traits: ['Autistic', 'Sensory-sensitive', 'Structured routine', 'Deeply focused'],
     interests: ['Jazz piano & theory', 'Bird watching', 'Classical composition', 'Maths puzzles'],
   },
@@ -1000,7 +1000,7 @@ const PROFILES = [
     name: 'Dara Mensah', age: 27,
     tagline: 'filmmaker · slow responder · ADHD',
     compat: 85, distance: '9 miles away', location: 'Lewisham, London',
-    bio: 'I take hours to reply sometimes — not because I don\'t care, because I\'m either deep in an edit or I\'ve opened the message and lost the thread. I need a partner who reads slow replies as thoughtful, not avoidant.',
+    bio: 'I take hours to reply sometimes — not because I don\'t care, because I\'m either deep in an edit or I\'ve opened the message and lost the thread. I need a friend who reads slow replies as thoughtful, not avoidant.',
     traits: ['ADHD', 'Time blindness', 'Rejection sensitivity', 'Deep processor'],
     interests: ['Documentary filmmaking', 'Afrobeat & highlife', 'Photography zines', 'Long walks at dusk'],
   },
@@ -1009,7 +1009,7 @@ const PROFILES = [
     name: 'Felix Hartmann', age: 31,
     tagline: 'engineer · board gamer · direct communicator',
     compat: 87, distance: '11 miles away', location: 'Hoxton, London',
-    bio: 'I say what I mean and I mean what I say. I don\'t do hints, subtext, or "I\'m fine" when I\'m not. It sounds blunt but it\'s actually just respect — I figure you\'d rather know. Looking for someone who operates the same way.',
+    bio: 'I say what I mean and I mean what I say. I don\'t do hints, subtext, or "I\'m fine" when I\'m not. It sounds blunt but it\'s actually just respect — I figure you\'d rather know. Looking for a friend who operates the same way.',
     traits: ['Autistic', 'Literal communicator', 'Low tolerance for ambiguity', 'Consistent and reliable'],
     interests: ['Systems engineering', 'Strategy & war games', 'Mechanical keyboards', 'Speculative fiction'],
   },
@@ -1138,15 +1138,15 @@ function updateLikeBtn(){
   const limitReached = likedProfileIdxs.length >= MAX_LIKES;
   const p = PROFILES[chosenProfileIdx] || PROFILES[0];
   if(alreadyLiked){
-    likeBtn.textContent = '✓  LIKED';
+    likeBtn.textContent = '✓  FRIEND REQUEST SENT';
     likeBtn.classList.add('liked');
     likeBtn.disabled = false;
   } else if(limitReached){
-    likeBtn.textContent = `LIKES FULL (${MAX_LIKES}/${MAX_LIKES})`;
+    likeBtn.textContent = `REQUESTS FULL (${MAX_LIKES}/${MAX_LIKES})`;
     likeBtn.classList.remove('liked');
     likeBtn.disabled = true;
   } else {
-    likeBtn.innerHTML = `♡ &nbsp;SEND A LIKE TO ${p.name.split(' ')[0].toUpperCase()}`;
+    likeBtn.innerHTML = `♡ &nbsp;ADD ${p.name.split(' ')[0].toUpperCase()} AS A FRIEND`;
     likeBtn.classList.remove('liked');
     likeBtn.disabled = false;
   }
@@ -1188,7 +1188,7 @@ function openLikesOverlay(){
             <div class="lo-name">${p.name}, ${p.age}</div>
             <div class="lo-meta">${p.location} · ${p.distance}</div>
             <div class="lo-tagline">${p.tagline}</div>
-            <div class="lo-match">${p.compat}% match</div>
+            <div class="lo-match">${p.compat}% compatible</div>
           </div>
         </div>`;
     });
@@ -1208,7 +1208,7 @@ document.getElementById('likes-cta').addEventListener('click', () => {
 
 function showProfileCard(){
   const p = PROFILES[chosenProfileIdx] || PROFILES[0];
-  document.getElementById('pc-match').textContent        = `${p.compat}% match`;
+  document.getElementById('pc-match').textContent        = `${p.compat}% compatible`;
   document.getElementById('pc-name').textContent         = p.name;
   document.getElementById('pc-age').textContent          = p.age;
   document.getElementById('pc-location-text').textContent = p.location;
@@ -1290,7 +1290,7 @@ function drawWisps(t, opacity){
       const idxs = PROFILE_SELECTION[chosenCategoryIdx][chosenSnippetIdx];
       const prof  = PROFILES[idxs[i]];
       subText = chosenCategoryIdx === RECOMMENDED_CATEGORY_IDX
-        ? `${prof.compat}% match · ${prof.tagline.split(' · ')[0]}`
+        ? `${prof.compat}% compatible · ${prof.tagline.split(' · ')[0]}`
         : `${prof.compat}% · ${prof.tagline.split(' · ')[0]}`;
     }
 
