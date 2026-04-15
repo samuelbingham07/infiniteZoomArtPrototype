@@ -629,7 +629,7 @@ const RECOMMENDED_CATEGORY_IDX = 3;
 // Level 1 snippets — 4 sets, one per category, each with 4 profile snippets
 const SNIPPET_LABELS = [
   // Category 0: special interest
-  [ 'also really into\nvintage synths', 'reads the same\nbook series', 'competitive chess\nevery weekend', 'loves hiking\nand camping' ],
+  [ 'loves\nmusic', 'loves\nreading', 'into\nstrategy & games', 'loves being\noutdoors' ],
   // Category 1: communication style
   [ 'prefers texting\nover phone calls', 'needs time to\nprocess before replying', 'direct & literal —\nsays exactly what they mean', 'low-pressure,\nno read-receipt anxiety' ],
   // Category 2: neurodivergent traits
@@ -843,11 +843,11 @@ const PROFILES = [
   // 0
   {
     name: 'Alex Rivera', age: 27,
-    tagline: 'rock climber · synth nerd · ADHD',
+    tagline: 'active · into music · ADHD',
     compat: 91, distance: '3 miles away', location: 'Shoreditch, London',
-    bio: 'I hyperfocus hard — usually on modular synths or the next bouldering project. I find small talk exhausting but could talk for hours about the things I love. Looking for a friend who gets that intensity, not just tolerates it.',
+    bio: 'I hyperfocus hard — usually lost in a music project or planning the next outdoor adventure. I find small talk exhausting but could talk for hours about the things I love. Looking for a friend who gets that intensity, not just tolerates it.',
     traits: ['ADHD', 'Hyperfocus tendencies', 'Sensory-seeking', 'Rejection sensitive'],
-    interests: ['Vintage & modular synths', 'Rock climbing', 'Sci-fi novels', 'Analogue photography'],
+    interests: ['Music', 'Outdoor sports & climbing', 'Reading', 'Photography'],
   },
   // 1
   {
@@ -856,52 +856,52 @@ const PROFILES = [
     compat: 88, distance: '7 miles away', location: 'Peckham, London',
     bio: 'I read two books a week — mostly through audiobooks because my brain works better that way. My best hours are after 9pm. I value people who communicate directly and don\'t mind that I sometimes need to re-read things twice.',
     traits: ['Dyslexia', 'Night owl rhythm', 'High empathy', 'Auditory processing'],
-    interests: ['Fantasy & literary fiction', 'Long-form podcasts', 'Cooking from scratch', 'Thrift shopping'],
+    interests: ['Reading', 'Podcasts', 'Cooking', 'Shopping & vintage'],
   },
   // 2
   {
     name: 'Jordan Hale', age: 30,
-    tagline: 'trail runner · chess obsessive · autistic',
+    tagline: 'runner · into games · autistic',
     compat: 85, distance: '12 miles away', location: 'Hackney, London',
-    bio: 'I train for ultras at weekends and play chess online most evenings. I need clear plans, honest communication, and low-pressure hangouts. I\'m not great at reading between the lines — just say what you mean and I\'ll do the same.',
+    bio: 'I train for long runs at weekends and spend evenings on strategy games. I need clear plans, honest communication, and low-pressure hangouts. I\'m not great at reading between the lines — just say what you mean and I\'ll do the same.',
     traits: ['Autistic', 'Routine-driven', 'Literal communicator', 'Detail-oriented'],
-    interests: ['Trail & ultra running', 'Chess', 'Bird watching', 'Topology & maths'],
+    interests: ['Running', 'Strategy games', 'Nature & wildlife', 'Maths & puzzles'],
   },
   // 3
   {
     name: 'Priya Nair', age: 26,
-    tagline: 'painter · tea collector · sensory processing',
+    tagline: 'painter · tea lover · sensory processing',
     compat: 83, distance: '5 miles away', location: 'Dalston, London',
     bio: 'I paint slow, textured abstracts and own somewhere around 40 loose-leaf teas. Loud venues wipe me out for days so I tend toward quieter plans. I\'m looking for a friend who\'s okay with the odd sensory day and doesn\'t need constant energy from me.',
     traits: ['Sensory processing differences', 'Introvert', 'Low-stimulus needs', 'Deep focus'],
-    interests: ['Watercolour & oil painting', 'Tea ceremony', 'Ceramics', 'Slow travel'],
+    interests: ['Painting & art', 'Tea', 'Making things', 'Travel'],
   },
   // 4
   {
     name: 'Kai Morales', age: 25,
-    tagline: 'producer · skater · ADHD brain',
+    tagline: 'into music · active · ADHD brain',
     compat: 89, distance: '6 miles away', location: 'Brixton, London',
-    bio: 'I make beats at 2am and skate at 7am. My energy is chaotic and my apartment reflects that. I\'m great at starting things and working on finishing them. Looking for a friend who can match my curiosity, not my schedule.',
+    bio: 'I make music at 2am and exercise at 7am. My energy is chaotic and my apartment reflects that. I\'m great at starting things and working on finishing them. Looking for a friend who can match my curiosity, not my schedule.',
     traits: ['ADHD', 'Impulsivity', 'Creative bursts', 'Sleep irregularity'],
-    interests: ['Music production', 'Skateboarding', 'Sampling & vinyl', 'Street photography'],
+    interests: ['Making music', 'Active sports', 'Collecting music', 'Photography'],
   },
   // 5
   {
     name: 'Sasha Bloom', age: 28,
-    tagline: 'ceramicist · slow mover · anxiety & dyscalculia',
+    tagline: 'maker · slow mover · anxiety & dyscalculia',
     compat: 82, distance: '9 miles away', location: 'Islington, London',
-    bio: 'I make pots and take long walks. Numbers don\'t stick in my brain the way words do, and new environments take a bit of warming up. I prefer quality over quantity in people and plans.',
+    bio: 'I make things and take long walks. Numbers don\'t stick in my brain the way words do, and new environments take a bit of warming up. I prefer quality over quantity in people and plans.',
     traits: ['Dyscalculia', 'Generalised anxiety', 'High sensitivity', 'Slow to warm up'],
-    interests: ['Ceramics & wheel throwing', 'Yoga & breathwork', 'Botanical illustration', 'Slow cinema'],
+    interests: ['Making things', 'Yoga', 'Drawing & illustration', 'Film & cinema'],
   },
   // 6
   {
     name: 'Theo Adeyemi', age: 22,
-    tagline: 'astronomy nerd · anime marathon · autistic',
+    tagline: 'science nerd · animation fan · autistic',
     compat: 86, distance: '11 miles away', location: 'Camberwell, London',
-    bio: 'I track satellites and can name every Studio Ghibli score from memory. I don\'t do small talk well but I give a lot to conversations that actually matter. Ideal hangout: planetarium, then ramen, then arguing about narrative structure.',
+    bio: 'I\'m obsessed with space and can name every Studio Ghibli score from memory. I don\'t do small talk well but I give a lot to conversations that actually matter. Ideal hangout: science museum, then ramen, then arguing about narrative structure.',
     traits: ['Autistic', 'Monotropic focus', 'Direct communicator', 'Pattern thinker'],
-    interests: ['Amateur astronomy', 'Anime & manga', 'Astrophysics', 'Strategy board games'],
+    interests: ['Science & space', 'Animation & comics', 'Learning & reading', 'Board games'],
   },
   // 7
   {
@@ -910,7 +910,7 @@ const PROFILES = [
     compat: 87, distance: '4 miles away', location: 'Bethnal Green, London',
     bio: 'I move my body to understand it — contemporary dance has been the best therapy I\'ve found. I drop things constantly, lose my keys daily, and bake elaborate cakes when I\'m overwhelmed. It works for me.',
     traits: ['ADHD', 'Dyspraxia', 'Body-based regulation', 'Emotionally expressive'],
-    interests: ['Contemporary dance', 'Sourdough & patisserie', 'Alt-pop music', 'Journalling'],
+    interests: ['Dance', 'Baking', 'Music', 'Journalling'],
   },
   // 8
   {
@@ -919,7 +919,7 @@ const PROFILES = [
     compat: 84, distance: '8 miles away', location: 'Clapham, London',
     bio: 'I photograph overlooked moments and cycle everywhere. Tics are part of the deal — most people relax after five minutes. I\'m patient, observant, and I notice things other people miss.',
     traits: ['Tourette\'s syndrome', 'High observation', 'Physical restlessness', 'Calm under pressure'],
-    interests: ['Documentary photography', 'Long-distance cycling', 'Jazz', 'Urban history'],
+    interests: ['Photography', 'Cycling', 'Music', 'History'],
   },
   // 9
   {
@@ -928,16 +928,16 @@ const PROFILES = [
     compat: 90, distance: '2 miles away', location: 'Shoreditch, London',
     bio: 'I design by day and speedrun indie games by night. I mask a lot at work so by evenings I need low-demand space. I communicate best in writing but I\'m trying. I\'m not flaky — I just need the plan confirmed twice.',
     traits: ['AuDHD', 'Masking fatigue', 'Hyperfocus', 'Needs predictability'],
-    interests: ['UI/UX design', 'Indie & puzzle games', 'Electronic music', 'Graphic novels'],
+    interests: ['Design', 'Gaming', 'Music', 'Comics & graphic novels'],
   },
   // 10
   {
     name: 'Milo Barnes', age: 27,
-    tagline: 'woodworker · plant nerd · dyslexic',
+    tagline: 'maker · nature lover · dyslexic',
     compat: 81, distance: '14 miles away', location: 'Stoke Newington, London',
-    bio: 'I work with my hands because my hands understand things my reading doesn\'t. My flat is half workshop, half indoor forest. I\'m a slow reader, a good listener, and terrible at texting back quickly.',
+    bio: 'I work with my hands because my hands understand things my reading doesn\'t. My flat is half workshop, half indoor garden. I\'m a slow reader, a good listener, and terrible at texting back quickly.',
     traits: ['Dyslexia', 'Kinaesthetic learner', 'Methodical', 'Poor working memory'],
-    interests: ['Furniture making', 'Botany & foraging', 'Hiking', 'Analogue photography'],
+    interests: ['Making things', 'Nature & outdoors', 'Exercise & hiking', 'Photography'],
   },
   // 11
   {
@@ -946,34 +946,34 @@ const PROFILES = [
     compat: 79, distance: '10 miles away', location: 'Elephant & Castle, London',
     bio: 'I direct devised theatre and feed people. I get overwhelmed in large groups but shine in small ones. Numbers are my nemesis but I can tell you exactly what\'s emotionally subtext in any scene.',
     traits: ['Dyscalculia', 'Social anxiety', 'Emotionally intuitive', 'Perfectionism'],
-    interests: ['Devised theatre', 'Experimental cooking', 'Literary fiction', 'True crime podcasts'],
+    interests: ['Theatre & performance', 'Cooking', 'Reading', 'Podcasts'],
   },
   // 12
   {
     name: 'Noah Okafor', age: 32,
-    tagline: 'jazz pianist · birdwatcher · autistic',
+    tagline: 'musician · nature lover · autistic',
     compat: 86, distance: '15 miles away', location: 'Crystal Palace, London',
-    bio: 'I practice scales for two hours every morning and spend weekends in parks with binoculars. I find most social situations exhausting but music and nature recharge me completely. I\'m looking for a friend who respects solitude.',
+    bio: 'I practise music for two hours every morning and spend weekends in parks. I find most social situations exhausting but music and nature recharge me completely. I\'m looking for a friend who respects solitude.',
     traits: ['Autistic', 'Sensory-sensitive', 'Structured routine', 'Deeply focused'],
-    interests: ['Jazz piano & theory', 'Bird watching', 'Classical composition', 'Maths puzzles'],
+    interests: ['Music', 'Nature & wildlife', 'Composing', 'Puzzles & maths'],
   },
   // 13
   {
     name: 'Camille Rousseau', age: 26,
-    tagline: 'ceramicist · plant parent · SPD + dyspraxia',
+    tagline: 'maker · plant parent · SPD + dyspraxia',
     compat: 80, distance: '6 miles away', location: 'Brixton, London',
-    bio: 'Clay is the only material that forgives my coordination. My flat has 47 plants and a kiln. I trip over most things but I\'m very careful with people. I need quiet time and I give it back in handmade mugs.',
+    bio: 'Making things is the only activity that forgives my coordination. My flat has 47 plants and a kiln. I trip over most things but I\'m very careful with people. I need quiet time and I give it back in handmade gifts.',
     traits: ['Sensory processing differences', 'Dyspraxia', 'Interoceptive awareness', 'Gentle pace'],
-    interests: ['Ceramics', 'Plant propagation', 'Foraging', 'Ambient music'],
+    interests: ['Making things', 'Gardening & plants', 'Being outdoors', 'Music'],
   },
   // 14
   {
     name: 'Ezra Singh', age: 24,
-    tagline: 'lyricist · footballer · ADHD',
+    tagline: 'into music · sporty · ADHD',
     compat: 83, distance: '16 miles away', location: 'Walthamstow, London',
-    bio: 'I write rap verses on the bus and play five-a-side three times a week. I have a lot of energy and I\'m still figuring out where to put it all. I\'m impulsive but I show up. Every time.',
+    bio: 'I write lyrics on the bus and play sport three times a week. I have a lot of energy and I\'m still figuring out where to put it all. I\'m impulsive but I show up. Every time.',
     traits: ['ADHD', 'High energy', 'Risk-taking', 'Emotional intensity'],
-    interests: ['Rap & lyricism', 'Football', 'Grime music history', 'Spoken word events'],
+    interests: ['Music & writing', 'Sport', 'Music history', 'Live events'],
   },
   // 15
   {
@@ -982,7 +982,7 @@ const PROFILES = [
     compat: 88, distance: '5 miles away', location: 'Hackney, London',
     bio: 'I write poetry about the city and practice yoga to survive it. I absorb other people\'s emotions like a sponge so I have strict boundaries — not walls, just limits. I want depth, stillness, and someone who means what they say.',
     traits: ['Generalised anxiety', 'Highly sensitive person', 'Empathic', 'Needs recovery time'],
-    interests: ['Spoken word poetry', 'Yoga & somatic work', 'Afrobeat music', 'Independent cinema'],
+    interests: ['Writing & poetry', 'Yoga & movement', 'Music', 'Film & cinema'],
   },
   // ── Communication-style profiles (16–19) ──────────────────────────────────
   // NOTE: to adjust age range for different demo users, search "age:" in this block.
@@ -993,16 +993,16 @@ const PROFILES = [
     compat: 89, distance: '6 miles away', location: 'Bermondsey, London',
     bio: 'Phone calls feel like ambushes. Texts give me time to say what I actually mean, not just what comes out first. I\'m warm and funny in writing — I promise the in-person version exists too, it just needs a bit of warming up.',
     traits: ['Autistic', 'Written communication preference', 'Processing lag', 'Selective mutism (mild)'],
-    interests: ['Short fiction', 'Specialty coffee', 'Cryptic crosswords', 'Vintage maps'],
+    interests: ['Writing & fiction', 'Coffee', 'Puzzles', 'Collecting'],
   },
   // 17
   {
     name: 'Dara Mensah', age: 27,
-    tagline: 'filmmaker · slow responder · ADHD',
+    tagline: 'creative · slow responder · ADHD',
     compat: 85, distance: '9 miles away', location: 'Lewisham, London',
-    bio: 'I take hours to reply sometimes — not because I don\'t care, because I\'m either deep in an edit or I\'ve opened the message and lost the thread. I need a friend who reads slow replies as thoughtful, not avoidant.',
+    bio: 'I take hours to reply sometimes — not because I don\'t care, because I\'m either deep in a project or I\'ve opened the message and lost the thread. I need a friend who reads slow replies as thoughtful, not avoidant.',
     traits: ['ADHD', 'Time blindness', 'Rejection sensitivity', 'Deep processor'],
-    interests: ['Documentary filmmaking', 'Afrobeat & highlife', 'Photography zines', 'Long walks at dusk'],
+    interests: ['Filmmaking & video', 'Music', 'Photography', 'Walking outdoors'],
   },
   // 18
   {
@@ -1011,7 +1011,7 @@ const PROFILES = [
     compat: 87, distance: '11 miles away', location: 'Hoxton, London',
     bio: 'I say what I mean and I mean what I say. I don\'t do hints, subtext, or "I\'m fine" when I\'m not. It sounds blunt but it\'s actually just respect — I figure you\'d rather know. Looking for a friend who operates the same way.',
     traits: ['Autistic', 'Literal communicator', 'Low tolerance for ambiguity', 'Consistent and reliable'],
-    interests: ['Systems engineering', 'Strategy & war games', 'Mechanical keyboards', 'Speculative fiction'],
+    interests: ['Engineering & tech', 'Strategy games', 'Tech hobbies', 'Reading'],
   },
   // 19
   {
@@ -1020,7 +1020,7 @@ const PROFILES = [
     compat: 82, distance: '7 miles away', location: 'Streatham, London',
     bio: 'Read receipts make my chest tight and I\'ve left every group chat I\'ve ever been in. I communicate best when there\'s no pressure to respond immediately — voice notes, long emails, a letter even. I\'m not slow, I\'m just deliberate.',
     traits: ['Generalised anxiety', 'Communication anxiety', 'Highly sensitive', 'Needs low-pressure space'],
-    interests: ['Editorial illustration', 'Plant care', 'Studio Ghibli', 'Handwritten letters'],
+    interests: ['Illustration & art', 'Plant care', 'Animation & film', 'Writing'],
   },
 ];
 // ── Age range note ───────────────────────────────────────────────────────────
