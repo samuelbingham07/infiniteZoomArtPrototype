@@ -690,13 +690,26 @@ const STREAM_PERIOD      = 16.0; // seconds per particle cycle
 const STREAM_REACH       = 0.38; // how far inward strands extend (fraction of diagonal)
 
 // Wisp tip positions — deliberately asymmetric so they feel scattered
-// across one open canvas, not gridded into quadrants
-const WISP_TIPS = [
-  { fx: 0.28, fy: 0.11 },  // upper-left area
-  { fx: 0.87, fy: 0.38 },  // right side
-  { fx: 0.62, fy: 0.89 },  // lower-right area
-  { fx: 0.08, fy: 0.63 },  // left side
-];
+// across one open canvas, not gridded into quadrants.
+// Mobile portrait gets positions pulled in from the edges to avoid
+// overlap with the breadcrumb bar at the top and nav buttons at the bottom.
+function getWispTips() {
+  if (innerWidth < 500) {
+    // Mobile portrait — safe zone roughly fy 0.20–0.78
+    return [
+      { fx: 0.26, fy: 0.22 },  // upper-left, clear of breadcrumb
+      { fx: 0.78, fy: 0.44 },  // right-centre
+      { fx: 0.58, fy: 0.76 },  // lower-right, clear of nav buttons
+      { fx: 0.18, fy: 0.60 },  // left-centre
+    ];
+  }
+  return [
+    { fx: 0.28, fy: 0.11 },  // upper-left area
+    { fx: 0.87, fy: 0.38 },  // right side
+    { fx: 0.62, fy: 0.89 },  // lower-right area
+    { fx: 0.08, fy: 0.63 },  // left side
+  ];
+}
 
 // Seeded deterministic RNG (xorshift-based) for fixed strand shapes
 function seededRng(seed){
@@ -723,7 +736,7 @@ function buildWispGeom(){
   const diag  = Math.sqrt(innerWidth*innerWidth + innerHeight*innerHeight);
   const reach = diag * STREAM_REACH;
 
-  wispGeom = WISP_TIPS.map((a) => {
+  wispGeom = getWispTips().map((a) => {
     const tipX = a.fx * innerWidth;
     const tipY = a.fy * innerHeight;
     const dx   = innerWidth  * 0.5 - tipX;
@@ -1424,8 +1437,8 @@ function handleWispTap(clientX, clientY){
       zoomHistory.push({ cx: currentCenter.x, cy: currentCenter.y, zoom: zoomLevel, uiLevel });
 
       // Focal point = the wisp's screen position
-      const fx = WISP_TIPS[i].fx;
-      const fy = WISP_TIPS[i].fy;
+      const fx = wispGeom[i].tipX / innerWidth;
+      const fy = wispGeom[i].tipY / innerHeight;
       zoomFocalWorld  = screenToMandelbrot(fx, fy);
       zoomFocalFx     = fx;
       zoomFocalFy     = fy;
