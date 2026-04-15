@@ -714,7 +714,8 @@ function bezierPt(t, x0, y0, cx, cy, x1, y1){
            y: m*m*y0 + 2*m*t*cy + t*t*y1 };
 }
 
-const wispPositions = [null, null, null, null];
+const wispPositions   = [null, null, null, null];
+const wispLabelBounds = [null, null, null, null];  // {x,y,w,h} of each label block
 let wispGeom   = [];
 let strandData = [];
 
@@ -810,6 +811,10 @@ function drawLabel(text, x, y, align, dimmed, subText){
     ctx.fillStyle = 'rgba(100,210,150,0.9)';
     ctx.fillText(line.toUpperCase(), lx, ly);
   });
+
+  // Return bounding box so callers can use it for hit-testing
+  const bx = align === 'right' ? cx - estW : align === 'center' ? cx - estW * 0.5 : cx;
+  return { x: bx - 8, y: cy - blockH * 0.5 - 8, w: estW + 16, h: blockH + 16 };
 }
 
 function wispTextAlign(g){
@@ -1015,7 +1020,7 @@ const PROFILES = [
   },
   // 19
   {
-    name: 'Rosa Park', age: 27,
+    name: 'Nadia Chen', age: 27,
     tagline: 'illustrator · soft life · anxiety',
     compat: 82, distance: '7 miles away', location: 'Streatham, London',
     bio: 'Read receipts make my chest tight and I\'ve left every group chat I\'ve ever been in. I communicate best when there\'s no pressure to respond immediately — voice notes, long emails, a letter even. I\'m not slow, I\'m just deliberate.',
@@ -1294,7 +1299,7 @@ function drawWisps(t, opacity){
         : `${prof.compat}% · ${prof.tagline.split(' · ')[0]}`;
     }
 
-    drawLabel(labels[i], tx, ty, align, false, subText);
+    wispLabelBounds[i] = drawLabel(labels[i], tx, ty, align, false, subText);
   }
 
   ctx.restore();
@@ -1411,7 +1416,9 @@ function handleWispTap(clientX, clientY){
     if(!p) continue;
     const dx = mx - p.x;
     const dy = my - p.y;
-    if(Math.sqrt(dx*dx + dy*dy) <= HIT_RADIUS){
+    const b  = wispLabelBounds[i];
+    const inLabel = b && mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h;
+    if(Math.sqrt(dx*dx + dy*dy) <= HIT_RADIUS || inLabel){
       hideChoices();
 
       zoomHistory.push({ cx: currentCenter.x, cy: currentCenter.y, zoom: zoomLevel, uiLevel });
