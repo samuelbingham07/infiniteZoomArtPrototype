@@ -683,7 +683,7 @@ const zoomHistory = [];
 
 const ZOOM_DURATION      = 1.4;
 const ZOOM_RATE          = 0.55; // unused for zoom-in, kept for reference
-const HIT_RADIUS         = 54;  // larger for finger taps
+const HIT_RADIUS         = 78;  // generous hit area for finger taps
 const NUM_STRANDS        = 1;    // one trail per wisp
 const PARTICLES_PER_STRAND = 35;
 const STREAM_PERIOD      = 16.0; // seconds per particle cycle
@@ -1282,7 +1282,7 @@ function drawWisps(t, opacity){
 
   for(let i = 0; i < 4; i++){
     const g = wispGeom[i];
-    drawDot(g.tipX, g.tipY, 8);
+    drawDot(g.tipX, g.tipY, 11);
     const { tx, ty, align } = wispTextAlign(g);
 
     let subText = null;
