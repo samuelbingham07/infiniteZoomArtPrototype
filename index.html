@@ -728,15 +728,15 @@ const STREAM_REACH       = 0.38; // how far inward strands extend (fraction of d
 // overlap with the breadcrumb bar at the top and nav buttons at the bottom.
 function getWispTips() {
   if (innerWidth < 500) {
-    // Mobile portrait — 2×2 corner layout.
+    // Mobile portrait — 2×2 true-corner layout.
     // Labels for 0,2 extend RIGHT; labels for 1,3 extend LEFT.
-    // Vertical spread covers the safe zone between breadcrumb (≈fy 0.08)
-    // and the nav buttons (≈fy 0.88), divided into four evenly-spaced rows.
+    // Left pair (0,2) pushed to the left edge; right pair (1,3) to the right edge.
+    // Right pair staggered ≈15% below left pair so horizontal labels don't collide.
     return [
-      { fx: 0.24, fy: 0.24 },  // top-left
-      { fx: 0.76, fy: 0.39 },  // top-right
-      { fx: 0.24, fy: 0.63 },  // bottom-left
-      { fx: 0.76, fy: 0.79 },  // bottom-right
+      { fx: 0.18, fy: 0.20 },  // top-left corner
+      { fx: 0.82, fy: 0.35 },  // top-right corner (staggered down to avoid label clash)
+      { fx: 0.18, fy: 0.65 },  // bottom-left corner (staggered up to avoid label clash)
+      { fx: 0.82, fy: 0.80 },  // bottom-right corner
     ];
   }
   return [
