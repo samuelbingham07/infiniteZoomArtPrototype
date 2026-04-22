@@ -84,6 +84,50 @@
       0%,100% { opacity:0.5; }
       50%      { opacity:1;   }
     }
+    #gate-mode-toggle {
+      display:flex; align-items:center; gap:14px;
+      margin:6px 0 2px;
+      user-select:none;
+    }
+    .mode-label {
+      font:600 13px system-ui,sans-serif;
+      letter-spacing:0.1em;
+      color:rgba(140,180,255,0.5);
+      cursor:pointer;
+      transition:color 0.3s, text-shadow 0.3s;
+    }
+    .mode-label.active {
+      color:rgba(220,235,255,0.95);
+      text-shadow:0 0 16px rgba(100,160,255,0.6);
+    }
+    .mode-label.active.romance {
+      color:rgba(255,190,220,0.95);
+      text-shadow:0 0 16px rgba(255,120,180,0.6);
+    }
+    #mode-track {
+      width:52px; height:28px;
+      background:rgba(20,40,90,0.7);
+      border:1px solid rgba(100,160,255,0.3);
+      border-radius:14px;
+      position:relative;
+      cursor:pointer;
+      transition:border-color 0.3s;
+    }
+    #mode-track.romance { border-color:rgba(255,120,180,0.4); }
+    #mode-thumb {
+      width:22px; height:22px;
+      background:rgba(140,180,255,0.9);
+      border-radius:50%;
+      position:absolute;
+      top:3px; left:3px;
+      transition:left 0.3s cubic-bezier(.4,0,.2,1), background 0.3s, box-shadow 0.3s;
+      box-shadow:0 0 10px rgba(100,160,255,0.6);
+    }
+    #mode-thumb.romance {
+      left:27px;
+      background:rgba(255,170,210,0.95);
+      box-shadow:0 0 12px rgba(255,100,160,0.7);
+    }
     #profile-card {
       position:fixed; inset:0;
       display:flex; align-items:center; justify-content:center;
@@ -410,6 +454,13 @@
 <div id="gate">
   <div id="gate-title">Welcome to Hiki's new<br>matching experience.</div>
   <div id="gate-sub" style="max-width:280px;text-align:center;line-height:1.5;opacity:0.7;font-size:12px;letter-spacing:0.06em;margin-bottom:4px">A preview of how matching works on Hiki —<br>explore real profiles by traits, not photos.</div>
+  <div id="gate-mode-toggle">
+    <span class="mode-label active" id="mode-label-friends">FRIENDS</span>
+    <div id="mode-track">
+      <div id="mode-thumb"></div>
+    </div>
+    <span class="mode-label romance" id="mode-label-romance">ROMANCE</span>
+  </div>
   <div id="gate-sub">TAP ANYWHERE TO BEGIN</div>
 </div>
 
@@ -1550,6 +1601,36 @@ function startFromGate(){
 
 gate.addEventListener('click',      startFromGate);
 gate.addEventListener('touchstart', e => { e.preventDefault(); startFromGate(); }, { passive: false });
+
+// ─── Friends / Romance toggle ────────────────────────────────────────────────
+let connectionMode = 'friends';
+const modeToggle        = document.getElementById('gate-mode-toggle');
+const modeTrack         = document.getElementById('mode-track');
+const modeThumb         = document.getElementById('mode-thumb');
+const modeLabelFriends  = document.getElementById('mode-label-friends');
+const modeLabelRomance  = document.getElementById('mode-label-romance');
+
+function setConnectionMode(m) {
+  connectionMode = m;
+  const isRomance = m === 'romance';
+  modeThumb.classList.toggle('romance', isRomance);
+  modeTrack.classList.toggle('romance', isRomance);
+  modeLabelFriends.classList.toggle('active', !isRomance);
+  modeLabelFriends.classList.remove('romance');
+  modeLabelRomance.classList.toggle('active', isRomance);
+  modeLabelRomance.classList.toggle('romance', isRomance);
+}
+
+function toggleMode(e) {
+  e.stopPropagation();
+  setConnectionMode(connectionMode === 'friends' ? 'romance' : 'friends');
+}
+
+modeToggle.addEventListener('click', toggleMode);
+modeToggle.addEventListener('touchstart', e => { e.stopPropagation(); e.preventDefault(); setConnectionMode(connectionMode === 'friends' ? 'romance' : 'friends'); }, { passive: false });
+
+modeLabelFriends.addEventListener('click', e => { e.stopPropagation(); setConnectionMode('friends'); });
+modeLabelRomance.addEventListener('click', e => { e.stopPropagation(); setConnectionMode('romance'); });
 
 // ─── Render loop ─────────────────────────────────────────────────────────────
 function lerp(a, b, t){ return a + (b - a) * t; }
